@@ -16,6 +16,12 @@ class Wallet(Base):
     def __repr__(self):
         return "<Wallet: {}>".format(self.name)
 
+    def to_json(self):
+        return {"id": self.id,
+                "name": self.name,
+                "inceptionDate": self.inception_date.strftime('%Y-%m-%d')
+                }
+
 
 class WalletData(Base):
     """ Data from PL Cuts that represents the state of the Wallet
