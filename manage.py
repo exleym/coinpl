@@ -3,9 +3,10 @@ import os, sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from flask_script import Manager, Server
-from coinpl import app, connect
+from coinpl import create_app, connect
 from coinpl.models import Base
 
+app = create_app()
 manager = Manager(app)
 
 # Turn on debugger by default and reloader

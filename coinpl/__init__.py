@@ -1,27 +1,25 @@
-from datetime import date
-from flask import Flask, g, current_app
+from flask import Flask, g
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from coinpl.models import Wallet
 from settings import config
 
-app = Flask(__name__)
-app.config.from_object(config)
+def create_app(**config_overrides):
+    app = Flask(__name__)
+    app.config.from_object(config)
 
-@app.route('/', methods=['GET'])
-def index():
-    return "<h1>Hello, World!</h1>"
+    # apply overrides for tests
+    app.config.update(config_overrides)
 
+    # import blueprints
+    from coinpl.blueprints.main.views import main
+    from coinpl.blueprints.api_v1.views import api_v1
 
-@app.route('/counter', methods=['GET'])
-def counter():
-    session = get_session(current_app)
-    wallet = session.query(Wallet).all()
-    if not wallet:
-        wallet = Wallet(name='Test Wallet', inception_date=date(2017, 1, 1))
-        session.add(wallet)
-        session.commit()
-    return "<h1>Wallet: {}!</h1>".format(wallet[0].name)
+    # register blueprints
+    app.register_blueprint(main)
+    app.register_blueprint(api_v1)
+
+    return app
 
 
 def get_db(app):
