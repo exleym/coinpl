@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Add Trade{% endblock %}
+
+{% block css %}
+  {{ super() }}
+{% endblock %}
+
+{% block content %}
+  <div class="page-std centered-form">
+    <h3>{{ header }}</h3>
+    <div>
+      {{ wtf.quick_form(form) }}
+    </div>
+  </div>
+{% endblock %}

@@ -2,7 +2,7 @@
 import os, sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from flask_script import Manager, Server
+from flask_script import Manager, Server, prompt_bool
 from coinpl import create_app, connect
 from coinpl.models import Base
 
@@ -17,10 +17,21 @@ manager.add_command("runserver", Server(
     port=5000
 ))
 
+
 @manager.command
 def dbinit():
     eng = connect(app)
     Base.metadata.create_all(bind=eng)
+
+
+@manager.command
+def dbdrop():
+    if prompt_bool('Are you sure? This will delete all your data (y/n)'):
+        print('dropping database ...')
+        eng = connect(app)
+        Base.metadata.drop_all(bind=eng)
+        print('database dropped')
+
 
 if __name__ == "__main__":
     manager.run()

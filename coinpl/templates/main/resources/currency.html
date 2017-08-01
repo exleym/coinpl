@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}{{ currency.name }}{% endblock %}
+
+{% block css %}
+  {{ super() }}
+{% endblock %}
+
+{% block content %}
+<div class="page-std">
+  <h1>{{ currency.name }}</h1>
+  <h4><a href="{{ url_for('main.currencies') }}">Back to Currencies</a></h4>
+  <h4>This is a Future Resource Page for {{ currency.name }}</h4>
+  <ul>
+    <li><b>Origin Date:</b> {{ currency.ipo_date.strftime('%m/%d/%Y') }}</li>
+    <li><b>Total Coins:</b> {{ currency.coin_limit }}</li>
+  </ul>
+</div>
+{% endblock %}
