@@ -3,6 +3,8 @@ from sqlalchemy import ( Column, Boolean, Date, DateTime, Float, ForeignKey,
                          Integer, String, Text )
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
+from flask_login import UserMixin
+from werkzeug.security import check_password_hash, generate_password_hash
 
 Base = declarative_base()
 
@@ -10,8 +12,15 @@ Base = declarative_base()
 class Wallet(Base):
     __tablename__ = 'wallets'
     id = Column(Integer, primary_key=True)
+    owner_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    exchange_id = Column(Integer, ForeignKey('exchanges.id'), nullable=False)
+    coin_id = Column(Integer, ForeignKey('coins.id'), nullable=False)
     name = Column(String(128), unique=True)
     inception_date = Column(Date)
+
+    owner = relationship('User', backref='wallets')
+    coin = relationship('Coin', backref='wallets')
+    exchange = relationship('Exchange', backref='wallets')
 
     def __repr__(self):
         return "<Wallet: {}>".format(self.name)
@@ -102,6 +111,7 @@ class Transaction(Base):
     id = Column(Integer, primary_key=True)
     coin_id = Column(Integer, ForeignKey('coins.id'))
     exchange_id = Column(Integer, ForeignKey('exchanges.id'))
+    wallet_id = Column(Integer, ForeignKey('wallets.id'))
     trade_time = Column(DateTime, nullable=False)
     quantity = Column(Float, nullable=False)
     execution_price = Column(Float, nullable=False)
@@ -109,6 +119,7 @@ class Transaction(Base):
 
     coin = relationship('Coin', backref='trades')
     exchange = relationship('Exchange', backref='trades')
+    wallet = relationship('Wallet', backref='trades')
 
     def __repr__(self):
         return "<Trade: {} {}>".format(
@@ -135,3 +146,46 @@ class Holding(Base):
         return "<Holding {:d}: {} {}>".format(self.id,
                                               self.coin.code,
                                               self.cut_date.strftime('%Y-%m-%d'))
+
+
+class User(Base, UserMixin):
+    __tablename__ = 'users'
+    id = Column(Integer, primary_key=True)
+    alias = Column(String(64), nullable=False, unique=True)
+    password_hash = Column(String(128))
+    first_name = Column(String(32))
+    last_name = Column(String(32))
+    email = Column(String(64), unique=True)
+    moderator = Column(Boolean, default=False)
+    admin = Column(Boolean, default=False)
+    created = Column(DateTime, default=datetime.now)
+    updated = Column(DateTime, default=datetime.now, onupdate=datetime.now)
+
+    @property
+    def json(self):
+        return {k: v for k, v in self.__dict__.items()
+                if k not in "_sa_instance_state"}
+
+    @property
+    def password(self):
+        raise AttributeError('Password is not a readable attribute!')
+
+    @password.setter
+    def password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def verify_password(self, password):
+        print("checking password hash ...")
+        if check_password_hash(self.password_hash, password):
+            print ("password checks out!")
+        else:
+            print("wrong password!")
+        return check_password_hash(self.password_hash, password)
+
+    def equals(self, other_user):
+        if self.id == other_user.id:
+            return True
+        return False
+
+    def __repr__(self):
+        return "<User: %r>" % self.alias

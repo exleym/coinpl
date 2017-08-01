@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Wallets{% endblock %}
+
+{% block css %}
+  {{ super() }}
+{% endblock %}
+
+{% block content %}
+<div class="page-std">
+  <h1>Currency Page</h1>
+    <ul>
+      {% if currencies %}
+        {% for currency in currencies %}
+          <li><a href="{{ url_for('main.currency', currency_name=currency.name) }}">{{ currency.name }}</a></li>
+        {% endfor %}
+      {% endif %}
+      <li><a href="{{ url_for('main.add_wallet') }}">Add Wallets</a></li>
+    </ul>
+</div>
+{% endblock %}

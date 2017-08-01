@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block css %}
+  {{ super() }}
+{% endblock %}
+
+{% block content %}
+  <div class="page-std centered-form">
+    <h3>Sign In</h3>
+    <div>
+      {{ wtf.quick_form(form) }}
+    </div>
+    <div class="divider divider-break">I'm New Here</div>
+    <div><a href="{{ url_for('auth.sign_up') }}" class="btn btn-secondary" id="sign-up" role="button">Sign Up</a></div>
+  </div>
+{% endblock %}

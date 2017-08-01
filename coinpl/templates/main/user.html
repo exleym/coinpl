@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% from "macros/wallets.html" import wallets %}
+
+{% block title %}
+{% if user.equals(current_user) %}Your Page{% else %}{{ user.alias }}'s Page{% endif %}
+{% endblock %}
+
+{% block css %}
+  {{ super() }}
+{% endblock %}
+
+{% block content %}
+<div class="page-std">
+  <h1>User Page for {{ user.alias }}</h1>
+    {% if user.equals(current_user) %}
+      <h4>Welcome to Your User Page, {{ user.first_name }}!</h4>
+      {{ wallets(user) }}
+    {% else %}
+      <h4>Welcome to {{ user.first_name }}'s Page, you creepy fuck!</h4>
+    {% endif %}
+</div>
+{% endblock %}

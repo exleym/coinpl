@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}{{ exchange.name }}{% endblock %}
+
+{% block css %}
+  {{ super() }}
+{% endblock %}
+
+{% block content %}
+<div class="page-std">
+  <h1>{{ exchange.name }}</h1>
+  <h4><a href="{{ url_for('main.exchanges') }}">Back to Exchanges</a></h4>
+  <h4>This is a Future Resource Page for {{ exchange.name }}</h4>
+</div>
+{% endblock %}

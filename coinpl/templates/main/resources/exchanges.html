@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% from "macros/wallets.html" import wallets %}
+
+{% block title %}
+Exchanges
+{% endblock %}
+
+{% block css %}
+  {{ super() }}
+{% endblock %}
+
+{% block content %}
+<div class="page-std">
+  <h1>Exchange Management Page</h1>
+    <ul>
+      {% if exchanges %}
+        {% for exchange in exchanges %}
+        <li><a href="{{ url_for('main.exchange', exchange_id=exchange.id) }}">{{ exchange.name }}</a></li>
+        {% endfor %}
+      <li><a href="{{ url_for('main.add_exchange') }}">Add Exchange</a></li>
+      {% endif %}
+    </ul>
+</div>
+{% endblock %}
