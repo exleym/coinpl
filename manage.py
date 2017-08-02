@@ -5,6 +5,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from flask_script import Manager, Server, prompt_bool
 from coinpl import create_app, connect
 from coinpl.models import Base
+from coinpl.external.gdax import GDAXDataManager
 
 app = create_app()
 manager = Manager(app)
@@ -22,6 +23,14 @@ manager.add_command("runserver", Server(
 def dbinit():
     eng = connect(app)
     Base.metadata.create_all(bind=eng)
+
+
+@manager.command
+def dbpopulate():
+    eng = connect(app)
+    mgr = GDAXDataManager(eng)
+    mgr.populate_fixed_resources()
+    #mgr.backfill_historical_data(product='ETH-USD', months=1, granularity=60)
 
 
 @manager.command
