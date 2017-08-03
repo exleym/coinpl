@@ -4,7 +4,7 @@ from flask import jsonify, redirect, request, url_for, flash
 from flask_login import login_user, logout_user, login_required, current_user
 
 from coinpl import get_session
-from coinpl.models import Wallet
+from coinpl.models import Market, Product, Wallet
 
 api_v1 = Blueprint('api_v1', __name__, url_prefix='/api/v1.0')
 
@@ -14,3 +14,11 @@ def wallets():
     session = get_session(current_app)
     wallets = session.query(Wallet).all()
     return jsonify([w.to_json() for w in wallets])
+
+
+@api_v1.route('/markets/<currency>', methods=['GET'])
+def markets(currency):
+    crncy = currency + '-USD'
+    session = get_session(current_app)
+    markets = session.query(Market).filter(Product.symbol == crncy).limit(10)
+    return jsonify([m.to_json() for m in markets])

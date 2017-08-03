@@ -3,17 +3,20 @@ from requests.exceptions import HTTPError
 import json
 
 class GDAX(object):
+    """ GDAX DataService for public API data.
+
+    This class supports API requests for the public GDAX API.
+    It does not support private data requests or order generation.
+    """
 
     BASE_URL = 'https://api.gdax.com'
 
     def __init__(self):
         pass
 
-    def get_candles(self, product, start, end, granularity=60):
-        request = '/{}/candles?start={}&end={}&granularity={}'.format(
-            product, start, end, granularity
-        )
-        resp = requests.get(self.BASE_URL + request)
+    def get_market(self, product):
+        request = '/products/{}/book'.format(product)
+        resp = requests.get(self.BASE_URL + request, params={'level': 1})
         if resp.status_code == 200:
             return json.loads(resp.text)
         else:

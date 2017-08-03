@@ -2,6 +2,7 @@ from coinpl import get_session
 from coinpl.blueprints.main import main
 from coinpl.blueprints.main.forms import CoinForm
 from coinpl.models import Currency
+from coinpl.manager import DataManager
 from flask import abort, current_app, redirect, render_template, url_for
 from flask_login import login_required
 
@@ -13,7 +14,10 @@ def currency(currency_id):
     crncy = session.query(Currency).filter(Currency.id == currency_id).first()
     if not crncy:
         abort(404)
-    return render_template('main/resources/currency.html', currency=crncy)
+    mgr = DataManager(current_app)
+    mkt = mgr.update_market('{}-USD'.format(crncy.symbol))
+    return render_template('main/resources/currency.html', currency=crncy,
+                           market=mkt)
 
 
 @main.route('/currencies', methods=['GET'])

@@ -9,6 +9,35 @@ from werkzeug.security import check_password_hash, generate_password_hash
 Base = declarative_base()
 
 
+class Market(Base):
+    __tablename__ = 'markets'
+    id = Column(Integer, primary_key=True)
+    timestamp = Column(DateTime, default=datetime.now)
+    sequence = Column(Integer)
+    product_id = Column(Integer, ForeignKey('products.id'))
+    bid_price = Column(Float)
+    bid_size = Column(Float)
+    bid_parties = Column(Integer)
+    ask_price = Column(Float)
+    ask_size = Column(Float)
+    ask_parties = Column(Integer)
+
+    product = relationship('Product', backref='market_data', uselist=False)
+
+    def __repr__(self):
+        return "<Market: {} {} {:.2f}x{:.2f}>".format(
+            self.product.symbol,
+            self.timestamp.strftime('%Y-%m-%d %H:%M:%S'),
+            self.bid_price,
+            self.ask_price
+        )
+
+    def to_json(self):
+        return {
+            k: v for k, v in self.__dict__.items() if k != "_sa_instance_state"
+        }
+
+
 class Currency(Base):
     __tablename__ = 'currencies'
     id = Column(Integer, primary_key=True)

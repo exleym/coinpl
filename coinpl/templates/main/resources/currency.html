@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from "macros/markets.html" import markets %}
 
 {% block title %}{{ currency.name }}{% endblock %}
 
@@ -10,10 +11,12 @@
 <div class="page-std">
   <h1>{{ currency.name }}</h1>
   <h4><a href="{{ url_for('main.currencies') }}">Back to Currencies</a></h4>
-  <h4>This is a Future Resource Page for {{ currency.name }}</h4>
+  <div class="col-md-12">
+  {{ markets(market) }}
+  </div>
   <ul>
-    <li><b>Origin Date:</b> {{ currency.ipo_date.strftime('%m/%d/%Y') }}</li>
-    <li><b>Total Coins:</b> {{ currency.coin_limit }}</li>
+    <li><b>Origin Date:</b> {% if currency.ipo_date %}{{ currency.ipo_date.strftime('%m/%d/%Y') }}{% endif %}</li>
+    <li><b>Total Coins:</b> {% if currency.coin_limit %}{{ currency.coin_limit }}{% endif %}</li>
   </ul>
 </div>
 {% endblock %}
