@@ -3,10 +3,10 @@ from requests.exceptions import HTTPError
 import json
 
 class GDAX(object):
-    """ GDAX DataService for public API data.
+    """ GDAX DataService for public API services.
 
     This class supports API requests for the public GDAX API.
-    It does not support private data requests or order generation.
+    It does not support private services requests or order generation.
     """
 
     BASE_URL = 'https://api.gdax.com'

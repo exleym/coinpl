@@ -1,6 +1,6 @@
 from coinpl import connect, get_session
 from coinpl.models import Market, Product
-from coinpl.external.data import GDAX
+from coinpl.external.services import GDAX
 
 
 class DataManager(object):

@@ -35,7 +35,7 @@ def dbpopulate():
 
 @manager.command
 def dbdrop():
-    if prompt_bool('Are you sure? This will delete all your data (y/n)'):
+    if prompt_bool('Are you sure? This will delete all your services (y/n)'):
         print('dropping database ...')
         eng = connect(app)
         Base.metadata.drop_all(bind=eng)

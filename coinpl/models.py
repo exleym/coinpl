@@ -216,7 +216,7 @@ class Wallet(Base):
 
 class WalletData(Base):
     """ Data from PL Cuts that represents the state of the Wallet
-        These objects contain temporal data about a specific
+        These objects contain temporal services about a specific
         trading wallet at a specific point in time.
 
         For information about the PL System Cut that generated this
@@ -231,7 +231,7 @@ class WalletData(Base):
     invested_value = Column(Float)
     superceded = Column(Boolean, default=False)
 
-    wallet = relationship('Wallet', backref='data')
+    wallet = relationship('Wallet', backref='services')
     cut = relationship('Cut', backref='wallet_data', uselist=False)
 
     def __repr__(self):

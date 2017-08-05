@@ -1,5 +1,6 @@
 from flask import Blueprint, current_app, render_template, send_file
 from flask import jsonify, redirect, request, url_for, flash
+from coinpl.external.gdax import GDAXOrderManager
 
 from flask_login import login_user, logout_user, login_required, current_user
 
@@ -22,3 +23,10 @@ def markets(currency):
     session = get_session(current_app)
     markets = session.query(Market).filter(Product.symbol == crncy).limit(10)
     return jsonify([m.to_json() for m in markets])
+
+
+@api_v1.route('/account_stats', methods=['GET'])
+def account_stats():
+    gdax = GDAXOrderManager(current_app)
+    print(gdax.get_account_stats())
+    return jsonify(gdax.get_account_stats())
