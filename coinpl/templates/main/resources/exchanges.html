@@ -17,8 +17,8 @@ Exchanges
         {% for exchange in exchanges %}
         <li><a href="{{ url_for('main.exchange', exchange_id=exchange.id) }}">{{ exchange.name }}</a></li>
         {% endfor %}
-      <li><a href="{{ url_for('main.add_exchange') }}">Add Exchange</a></li>
       {% endif %}
+      <li><a href="{{ url_for('main.add_exchange') }}">Add Exchange</a></li>
     </ul>
 </div>
 {% endblock %}

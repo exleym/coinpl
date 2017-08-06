@@ -1,6 +1,6 @@
 from datetime import datetime
-from sqlalchemy import ( Column, Boolean, Date, DateTime, Float, ForeignKey,
-                         Integer, String, Text )
+from sqlalchemy import ( Column, BigInteger, Boolean, Date, DateTime, Float,
+                         ForeignKey, Integer, String, Text )
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from flask_login import UserMixin
@@ -13,7 +13,7 @@ class Market(Base):
     __tablename__ = 'markets'
     id = Column(Integer, primary_key=True)
     timestamp = Column(DateTime, default=datetime.now)
-    sequence = Column(Integer)
+    sequence = Column(BigInteger, unique=True)
     product_id = Column(Integer, ForeignKey('products.id'))
     bid_price = Column(Float)
     bid_size = Column(Float)
@@ -73,6 +73,9 @@ class Exchange(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(128), unique=True)
     url = Column(String(256))
+
+    def to_json(self):
+        return {"name": self.name, "url": self.url}
 
     def __repr__(self):
         return "<Exchange: {}>".format(self.name)
