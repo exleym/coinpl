@@ -1,6 +1,6 @@
 from datetime import datetime
-from sqlalchemy import ( Column, Boolean, Date, DateTime, Float, ForeignKey,
-                         Integer, String, Text )
+from sqlalchemy import ( Column, BigInteger, Boolean, Date, DateTime, Float,
+                         ForeignKey, Integer, String, Text )
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from flask_login import UserMixin
@@ -9,62 +9,46 @@ from werkzeug.security import check_password_hash, generate_password_hash
 Base = declarative_base()
 
 
-class Wallet(Base):
-    __tablename__ = 'wallets'
+class Market(Base):
+    __tablename__ = 'markets'
     id = Column(Integer, primary_key=True)
-    owner_id = Column(Integer, ForeignKey('users.id'), nullable=False)
-    exchange_id = Column(Integer, ForeignKey('exchanges.id'), nullable=False)
-    coin_id = Column(Integer, ForeignKey('coins.id'), nullable=False)
-    name = Column(String(128), unique=True)
-    inception_date = Column(Date)
+    timestamp = Column(DateTime, default=datetime.now)
+    sequence = Column(BigInteger, unique=True)
+    product_id = Column(Integer, ForeignKey('products.id'))
+    bid_price = Column(Float)
+    bid_size = Column(Float)
+    bid_parties = Column(Integer)
+    ask_price = Column(Float)
+    ask_size = Column(Float)
+    ask_parties = Column(Integer)
 
-    owner = relationship('User', backref='wallets')
-    coin = relationship('Coin', backref='wallets')
-    exchange = relationship('Exchange', backref='wallets')
+    product = relationship('Product', backref='market_data', uselist=False)
 
     def __repr__(self):
-        return "<Wallet: {}>".format(self.name)
+        return "<Market: {} {} {:.2f}x{:.2f}>".format(
+            self.product.symbol,
+            self.timestamp.strftime('%Y-%m-%d %H:%M:%S'),
+            self.bid_price,
+            self.ask_price
+        )
 
     def to_json(self):
-        return {"id": self.id,
-                "name": self.name,
-                "inceptionDate": self.inception_date.strftime('%Y-%m-%d')
-                }
+        return {
+            k: v for k, v in self.__dict__.items() if k != "_sa_instance_state"
+        }
 
 
-class WalletData(Base):
-    """ Data from PL Cuts that represents the state of the Wallet
-        These objects contain temporal data about a specific
-        trading wallet at a specific point in time.
-
-        For information about the PL System Cut that generated this
-        object, see <WalletData>.cut
-    """
-    __tablename__ = 'wallet_data'
+class Currency(Base):
+    __tablename__ = 'currencies'
     id = Column(Integer, primary_key=True)
-    wallet_id = Column(Integer, ForeignKey('wallets.id'))
-    cut_id = Column(Integer, ForeignKey('cuts.id'))
-    effective = Column(Date)
-    nav = Column(Float)
-    invested_value = Column(Float)
-    superceded = Column(Boolean, default=False)
-
-    wallet = relationship('Wallet', backref='data')
-    cut = relationship('Cut', backref='wallet_data', uselist=False)
-
-    def __repr__(self):
-        return "<WalletData: {}>".format(self.name)
-
-
-class Coin(Base):
-    __tablename__ = 'coins'
-    id = Column(Integer, primary_key=True)
-    name = Column(String(128), unique=True)
+    symbol = Column(String(3), unique=True, nullable=False)
+    name = Column(String(128), unique=True, nullable=False)
+    min_size = Column(Float)
     ipo_date = Column(Date)
-    coin_limit = Column(Integer)
+    currency_limit = Column(Integer)
 
     def __repr__(self):
-        return "<Coin: {}>".format(self.name)
+        return "<Currency: {}>".format(self.symbol)
 
 
 class Cut(Base):
@@ -90,8 +74,31 @@ class Exchange(Base):
     name = Column(String(128), unique=True)
     url = Column(String(256))
 
+    def to_json(self):
+        return {"name": self.name, "url": self.url}
+
     def __repr__(self):
         return "<Exchange: {}>".format(self.name)
+
+
+class Holding(Base):
+    __tablename__ = 'holdings'
+    id = Column(Integer, primary_key=True)
+    wallet_id = Column(Integer, ForeignKey('wallets.id'))
+    currency_id = Column(Integer, ForeignKey('currencies.id'))
+    cut_id = Column(Integer, ForeignKey('cuts.id'))
+    cut_date = Column(Date)
+    quantity = Column(Float)
+    price = Column(Float)
+
+    currency = relationship('Currency', backref='holdings')
+    wallet = relationship('Wallet', backref='holdings')
+    cut = relationship('Cut', backref='holdings')
+
+    def __repr__(self):
+        return "<Holding {:d}: {} {}>".format(self.id,
+                                              self.currency.code,
+                                              self.cut_date.strftime('%Y-%m-%d'))
 
 
 class PLVersion(Base):
@@ -106,10 +113,26 @@ class PLVersion(Base):
                                                self.release_date.strftime('%Y-%m-%d'))
 
 
+class Product(Base):
+    __tablename__ = 'products'
+    id = Column(Integer, primary_key=True)
+    symbol = Column(String(7), unique=True, nullable=False)
+    base_currency_id = Column(Integer, ForeignKey('currencies.id'))
+    quote_currency_id = Column(Integer, ForeignKey('currencies.id'))
+    base_min_size = Column(Float)
+    base_max_size = Column(Float)
+    quote_increment = Column(Float)
+    display_name = Column(String(7))
+    margin_enabled = Column(Boolean)
+
+    def __repr__(self):
+        return "<Product: {}>".format(self.display_name)
+
+
 class Transaction(Base):
     __tablename__ = 'transactions'
     id = Column(Integer, primary_key=True)
-    coin_id = Column(Integer, ForeignKey('coins.id'))
+    currency_id = Column(Integer, ForeignKey('currencies.id'))
     exchange_id = Column(Integer, ForeignKey('exchanges.id'))
     wallet_id = Column(Integer, ForeignKey('wallets.id'))
     trade_time = Column(DateTime, nullable=False)
@@ -117,7 +140,7 @@ class Transaction(Base):
     execution_price = Column(Float, nullable=False)
     commission = Column(Float, nullable=False)
 
-    coin = relationship('Coin', backref='trades')
+    currency = relationship('Currency', backref='trades')
     exchange = relationship('Exchange', backref='trades')
     wallet = relationship('Wallet', backref='trades')
 
@@ -126,26 +149,6 @@ class Transaction(Base):
             self.name,
             self.trade_time.strftime('%Y-%m-%d %H%M%S')
         )
-
-
-class Holding(Base):
-    __tablename__ = 'holdings'
-    id = Column(Integer, primary_key=True)
-    wallet_id = Column(Integer, ForeignKey('wallets.id'))
-    coin_id = Column(Integer, ForeignKey('coins.id'))
-    cut_id = Column(Integer, ForeignKey('cuts.id'))
-    cut_date = Column(Date)
-    quantity = Column(Float)
-    price = Column(Float)
-
-    coin = relationship('Coin', backref='holdings')
-    wallet = relationship('Wallet', backref='holdings')
-    cut = relationship('Cut', backref='holdings')
-
-    def __repr__(self):
-        return "<Holding {:d}: {} {}>".format(self.id,
-                                              self.coin.code,
-                                              self.cut_date.strftime('%Y-%m-%d'))
 
 
 class User(Base, UserMixin):
@@ -189,3 +192,50 @@ class User(Base, UserMixin):
 
     def __repr__(self):
         return "<User: %r>" % self.alias
+
+
+class Wallet(Base):
+    __tablename__ = 'wallets'
+    id = Column(Integer, primary_key=True)
+    owner_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    exchange_id = Column(Integer, ForeignKey('exchanges.id'), nullable=False)
+    currency_id = Column(Integer, ForeignKey('currencies.id'), nullable=False)
+    name = Column(String(128), unique=True)
+    inception_date = Column(Date)
+
+    owner = relationship('User', backref='wallets')
+    currency = relationship('Currency', backref='wallets')
+    exchange = relationship('Exchange', backref='wallets')
+
+    def __repr__(self):
+        return "<Wallet: {}>".format(self.name)
+
+    def to_json(self):
+        return {"id": self.id,
+                "name": self.name,
+                "inceptionDate": self.inception_date.strftime('%Y-%m-%d')
+                }
+
+
+class WalletData(Base):
+    """ Data from PL Cuts that represents the state of the Wallet
+        These objects contain temporal services about a specific
+        trading wallet at a specific point in time.
+
+        For information about the PL System Cut that generated this
+        object, see <WalletData>.cut
+    """
+    __tablename__ = 'wallet_data'
+    id = Column(Integer, primary_key=True)
+    wallet_id = Column(Integer, ForeignKey('wallets.id'))
+    cut_id = Column(Integer, ForeignKey('cuts.id'))
+    effective = Column(Date)
+    nav = Column(Float)
+    invested_value = Column(Float)
+    superceded = Column(Boolean, default=False)
+
+    wallet = relationship('Wallet', backref='services')
+    cut = relationship('Cut', backref='wallet_data', uselist=False)
+
+    def __repr__(self):
+        return "<WalletData: {}>".format(self.name)

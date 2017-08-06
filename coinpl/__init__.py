@@ -6,9 +6,9 @@ from sqlalchemy.orm import sessionmaker
 from coinpl.models import Wallet, User
 from settings import config
 
-def create_app(**config_overrides):
+def create_app(env='prd', **config_overrides):
     app = Flask(__name__)
-    app.config.from_object(config)
+    app.config.from_object(config[env])
 
     # apply overrides for tests
     app.config.update(config_overrides)
@@ -52,5 +52,5 @@ def get_session(app):
 
 
 def connect(app):
-    eng = create_engine(config.DB_URI)
+    eng = create_engine(app.config['DB_URI'])
     return eng

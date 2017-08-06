@@ -1,0 +1,11 @@
+{% macro markets(market) -%}
+{% if market %}
+  <div class="market container-fluid">
+    <div>
+      <div class="col-md-4">({{ market.bid_parties }} orders) {{ "{:.3f}".format(market.bid_size) }}</div>
+      <div class="col-md-4">{{ "{:.2f}".format(market.bid_price) }} x {{ "{:.2f}".format(market.ask_price) }}</div>
+      <div class="col-md-4">{{ "{:.3f}".format(market.ask_size) }} ({{ market.ask_parties }} orders)</div>
+    </div>
+  </div>
+{% endif %}
+{%- endmacro %}
