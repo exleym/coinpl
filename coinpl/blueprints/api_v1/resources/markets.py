@@ -18,7 +18,9 @@ def create_market():
     """
     if not request.json:
         return error_out(MissingJSONError())
-    expected_fields = ['alias', 'password', 'first_name', 'last_name', 'email']
+    expected_fields = ['sequence', 'product_id', 'bid_price', 'bid_size',
+                       'bid_parties', 'ask_price', 'ask_size', 'ask_parties',
+                       'timestamp']
     data = request.json
 
     # Ensure that required fields have been included in JSON data
@@ -76,7 +78,7 @@ def update_market(market_id):
         setattr(market, k, v)
     session.add(market)
     session.commit()
-    return jsonify(market.shallow_json)
+    return jsonify(market.shallow_json), 200
 
 
 @api_v1.route('/market/<market_id>', methods=['DELETE'])

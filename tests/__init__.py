@@ -35,6 +35,29 @@ def create_exchanges(client):
     return 0
 
 
+def create_markets(client):
+    create_products(client)
+    mkt = [
+        {'timestamp': '2017-8-13 12:54:00', 'sequence': 12345,
+         'product_id': 1, 'bid_price': 294.5, 'bid_size': 200,
+         'bid_parties': 4, 'ask_price': 296.13, 'ask_size': 344.24,
+         'ask_parties': 8 },
+        {'timestamp': '2017-8-13 12:55:00', 'sequence': 12346,
+         'product_id': 1, 'bid_price': 294.55, 'bid_size': 203.4,
+         'bid_parties': 4, 'ask_price': 296.93, 'ask_size': 124.24,
+         'ask_parties': 2},
+        {'timestamp': '2017-8-13 12:56:00', 'sequence': 12347,
+         'product_id': 1, 'bid_price': 294.5, 'bid_size': 452.46,
+         'bid_parties': 11, 'ask_price': 295.67, 'ask_size': 110.83,
+         'ask_parties': 5},
+    ]
+    for m in mkt:
+        client.post(URL_BASE + 'markets',
+                    data=json.dumps(m),
+                    content_type='application/json')
+    return 0
+
+
 def create_products(client):
     create_currencies(client)
     prd = [
