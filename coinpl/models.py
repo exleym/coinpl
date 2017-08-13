@@ -9,36 +9,6 @@ from werkzeug.security import check_password_hash, generate_password_hash
 Base = declarative_base()
 
 
-class Market(Base):
-    __tablename__ = 'markets'
-    id = Column(Integer, primary_key=True)
-    timestamp = Column(DateTime, default=datetime.now)
-    sequence = Column(BigInteger, unique=True)
-    product_id = Column(Integer, ForeignKey('products.id'))
-    bid_price = Column(Float)
-    bid_size = Column(Float)
-    bid_parties = Column(Integer)
-    ask_price = Column(Float)
-    ask_size = Column(Float)
-    ask_parties = Column(Integer)
-
-    product = relationship('Product', backref='market_data', uselist=False)
-
-    def __repr__(self):
-        return "<Market: {} {} {:.2f}x{:.2f}>".format(
-            self.product.symbol,
-            self.timestamp.strftime('%Y-%m-%d %H:%M:%S'),
-            self.bid_price,
-            self.ask_price
-        )
-
-    @property
-    def shallow_json(self):
-        return {
-            k: v for k, v in self.__dict__.items() if k != "_sa_instance_state"
-        }
-
-
 class Currency(Base):
     __tablename__ = 'currencies'
     id = Column(Integer, primary_key=True)
@@ -76,9 +46,19 @@ class Cut(Base):
     wallet = relationship('Wallet', backref='cuts')
     pl_version = relationship('PLVersion', backref='cuts')
 
+    @property
+    def shallow_json(self):
+        return {
+            "id": self.id,
+            "wallet_id": self.wallet_id,
+            "effective": self.effective.strftime('%Y-%m-%d %H:%M:%S'),
+            "cut_time": self.cut_time.strftime('%Y-%m-%d %H%M%S'),
+            "pl_version_id": self.pl_version_id
+        }
+
     def __repr__(self):
         return "<Cut: {:d} ({})>".format(self.id,
-                                         self.cut_date.strftime('%Y-%m-%d'))
+                                         self.cut_time.strftime('%Y-%m-%d'))
 
 
 class Exchange(Base):
@@ -113,6 +93,36 @@ class Holding(Base):
         return "<Holding {:d}: {} {}>".format(self.id,
                                               self.currency.code,
                                               self.cut_date.strftime('%Y-%m-%d'))
+
+
+class Market(Base):
+    __tablename__ = 'markets'
+    id = Column(Integer, primary_key=True)
+    timestamp = Column(DateTime, default=datetime.now)
+    sequence = Column(BigInteger, unique=True)
+    product_id = Column(Integer, ForeignKey('products.id'))
+    bid_price = Column(Float)
+    bid_size = Column(Float)
+    bid_parties = Column(Integer)
+    ask_price = Column(Float)
+    ask_size = Column(Float)
+    ask_parties = Column(Integer)
+
+    product = relationship('Product', backref='market_data', uselist=False)
+
+    def __repr__(self):
+        return "<Market: {} {} {:.2f}x{:.2f}>".format(
+            self.product.symbol,
+            self.timestamp.strftime('%Y-%m-%d %H:%M:%S'),
+            self.bid_price,
+            self.ask_price
+        )
+
+    @property
+    def shallow_json(self):
+        return {
+            k: v for k, v in self.__dict__.items() if k != "_sa_instance_state"
+        }
 
 
 class PLVersion(Base):

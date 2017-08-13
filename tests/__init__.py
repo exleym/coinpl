@@ -26,6 +26,26 @@ def create_currencies(client):
     return 0
 
 
+def create_cuts(client):
+    cuts = client.get(URL_BASE + 'cuts/')
+    if cuts.status_code == 200:
+        return 0
+    create_wallets(client)
+    tstamp = "2017-8-10 17:00:00"
+    tstamp2 = "2017-8-10 17:15:54"
+    cuts = [
+        {"wallet_id": 1, "effective": tstamp, "cut_time": tstamp2, "pl_version_id": 1},
+        {"wallet_id": 2, "effective": tstamp, "cut_time": tstamp2, "pl_version_id": 1},
+        {"wallet_id": 3, "effective": tstamp, "cut_time": tstamp2, "pl_version_id": 1},
+        {"wallet_id": 4, "effective": tstamp, "cut_time": tstamp2, "pl_version_id": 1}
+    ]
+    for c in cuts:
+        rv = client.post(URL_BASE + 'cuts',
+                         data=json.dumps(c),
+                         content_type='application/json')
+    return 0
+
+
 def create_exchanges(client):
     exchanges = client.get(URL_BASE + 'exchanges/')
     if exchanges.status_code == 200:
