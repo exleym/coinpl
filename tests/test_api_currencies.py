@@ -1,8 +1,7 @@
 import json
 import unittest
-from sqlalchemy import create_engine
-from coinpl import create_app, get_db
-from coinpl.models import Base
+from coinpl import create_app
+from tests import create_currencies
 
 
 class TestModels(unittest.TestCase):
@@ -30,39 +29,32 @@ class TestModels(unittest.TestCase):
 
     def test_create_currency(self):
         with self.app.test_request_context():
-            rv = self.create_resource('currencies', {'symbol': 'TC1',
-                                                     'name': 'Test Currency 01',
-                                                     'min_size': 0.001,
-                                                     'ipo_date': '2014-1-1',
-                                                     'currency_limit': 9000})
+            currency = {
+                'symbol': 'TC1',
+                'name': 'Test Currency 01',
+                'min_size': 0.001,
+                'ipo_date': '2014-1-1',
+                'currency_limit': 9000
+            }
+            rv = self.create_resource('currencies', currency)
             data = json.loads(rv.data)
             self.assertEqual(data["symbol"], "TC1")
             self.assertEqual(data["id"], 1)
 
     def test_get_currency(self):
         with self.app.test_request_context():
-            rv = self.create_resource('currencies', {'symbol': 'TC1',
-                                                     'name': 'Test Currency 01',
-                                                     'min_size': 0.001,
-                                                     'ipo_date': '2014-1-1',
-                                                     'currency_limit': 9000})
+            create_currencies(self.client)
             resp = self.get_resource('currency', resource_id=1)
             data = json.loads(resp.data)
-            self.assertEqual(data["name"], 'Test Currency 01')
+            self.assertEqual(data["name"], 'Ethereum')
 
     def test_get_multiple_currencies(self):
         with self.app.test_request_context():
-            for i in range(5):
-                dta = {'symbol': 'TC{}'.format(i),
-                       'name': 'Test Currency 0{}'.format(i),
-                       'min_size': 0.001,
-                       'ipo_date': '2014-1-1',
-                       'currency_limit': 9000}
-                self.create_resource('currencies', dta)
+            create_currencies(self.client)
             resp = self.get_resource('currencies')
             data = json.loads(resp.data)
-            self.assertEqual(len(data), 5)
-            self.assertEqual(data[1]['name'], 'Test Currency 01')
+            self.assertEqual(len(data), 3)
+            self.assertEqual(data[0]['name'], 'Ethereum')
 
     def test_missing_currency(self):
         with self.app.test_request_context():

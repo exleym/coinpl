@@ -1,7 +1,7 @@
 import json
 import unittest
 from coinpl import create_app
-from tests import create_users
+from tests import create_currencies, create_products
 
 
 class TestModels(unittest.TestCase):
@@ -27,36 +27,39 @@ class TestModels(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_create_user(self):
+    def test_create_product(self):
         with self.app.test_request_context():
+            create_currencies(client=self.client)
             dta = {
-                'alias': 'jerry',
-                'password': 'cornell77',
-                'first_name': 'Jerry',
-                'last_name': 'Garcia',
-                'email': 'jgarcia@gmail.com'
+                'symbol': 'ETH-USD',
+                'base_currency_id': 1,
+                'quote_currency_id': 2,
+                'base_min_size': 0.01,
+                'base_max_size': 1000000,
+                'quote_increment': 0.01,
+                'display_name': 'ETH/USD',
+                'margin_enabled': False
             }
-            rv = self.create_resource('users', dta)
+            rv = self.create_resource('products', dta)
             data = json.loads(rv.data)
-            self.assertEqual(data["alias"], "jerry")
-            self.assertEqual(data["id"], 1)
+            self.assertEqual(data['symbol'], 'ETH-USD')
 
-    def test_get_user(self):
+    def test_get_product(self):
         with self.app.test_request_context():
-            create_users(self.client)
-            resp = self.get_resource('user', resource_id=1)
+            create_products(client=self.client)
+            resp = self.get_resource('product', resource_id=1)
             data = json.loads(resp.data)
-            self.assertEqual(data["alias"], 'jerry')
+            self.assertEqual(data["symbol"], 'ETH-USD')
 
-    def test_get_multiple_users(self):
+    def test_get_multiple_products(self):
         with self.app.test_request_context():
-            create_users(self.client)
-            resp = self.get_resource('users')
+            create_products(client=self.client)
+            resp = self.get_resource('products')
             data = json.loads(resp.data)
-            self.assertEqual(len(data), 5)
-            self.assertEqual(data[0]['alias'], 'jerry')
+            self.assertEqual(len(data), 2)
+            self.assertEqual(data[0]['symbol'], 'ETH-USD')
 
-    def test_missing_user(self):
+    def test_missing_product(self):
         with self.app.test_request_context():
-            resp = self.get_resource('user', resource_id=1)
+            resp = self.get_resource('product', resource_id=1)
             self.assertEqual(resp.status_code, 404)

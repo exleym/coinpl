@@ -55,6 +55,12 @@ from . resources.markets import (create_market,
                                  update_market,
                                  delete_market)
 
+from . resources.products import (create_product,
+                                 read_product_by_id,
+                                 read_products,
+                                 update_product,
+                                 delete_product)
+
 from . resources.users import (create_user,
                                read_user_by_id,
                                read_users,

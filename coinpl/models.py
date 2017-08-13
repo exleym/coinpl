@@ -139,6 +139,11 @@ class Product(Base):
     display_name = Column(String(7))
     margin_enabled = Column(Boolean)
 
+    @property
+    def shallow_json(self):
+        return {k: v for k, v in self.__dict__.items()
+                if k not in "_sa_instance_state"}
+
     def __repr__(self):
         return "<Product: {}>".format(self.display_name)
 
@@ -224,7 +229,7 @@ class Wallet(Base):
     def __repr__(self):
         return "<Wallet: {}>".format(self.name)
 
-    def to_json(self):
+    def shallow_json(self):
         return {"id": self.id,
                 "name": self.name,
                 "inceptionDate": self.inception_date.strftime('%Y-%m-%d')

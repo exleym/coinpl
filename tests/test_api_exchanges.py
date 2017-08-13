@@ -1,8 +1,7 @@
 import json
 import unittest
-from sqlalchemy import create_engine
-from coinpl import create_app, get_db
-from coinpl.models import Base
+from coinpl import create_app
+from tests import create_exchanges
 
 
 class TestModels(unittest.TestCase):
@@ -30,28 +29,28 @@ class TestModels(unittest.TestCase):
 
     def test_create_exchange(self):
         with self.app.test_request_context():
-            rv = self.create_resource('exchanges', {'name': 'Test Exchange 01',
-                                                    "url": "http://fooX.bar"})
+            exchange = {
+                'name': 'Test Exchange 01',
+                'url': 'http://foo.bar/1'
+            }
+            rv = self.create_resource('exchanges', exchange)
             data = json.loads(rv.data)
             self.assertEqual(data["name"], "Test Exchange 01")
 
     def test_get_exchange(self):
         with self.app.test_request_context():
-            self.create_resource('exchanges', {'name': 'Test Exchange 01',
-                                              "url": "http://fooY.bar"})
+            create_exchanges(self.client)
             resp = self.get_resource('exchange', resource_id=1)
             data = json.loads(resp.data)
-            self.assertEqual(data["name"], 'Test Exchange 01')
+            self.assertEqual(data["name"], 'Coinbase')
 
     def test_get_multiple_exchanges(self):
         with self.app.test_request_context():
-            self.create_resource('exchanges', {'name': 'Exchange 01', "url": "http://foo1.bar"})
-            self.create_resource('exchanges', {'name': 'Exchange 02', "url": "http://foo2.bar"})
-            self.create_resource('exchanges', {'name': 'Exchange 03', "url": "http://foo3.bar"})
+            create_exchanges(self.client)
             resp = self.get_resource('exchanges')
             data = json.loads(resp.data)
-            self.assertEqual(len(data), 3)
-            self.assertEqual(data[1]['name'], 'Exchange 02')
+            self.assertEqual(len(data), 2)
+            self.assertEqual(data[1]['name'], 'GDAX')
 
     def test_missing_exchange(self):
         with self.app.test_request_context():
