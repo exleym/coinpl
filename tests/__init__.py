@@ -8,6 +8,9 @@ URL_BASE = '/api/v1.0/'
 
 
 def create_currencies(client):
+    currencies = client.get(URL_BASE + 'currencies/')
+    if currencies.status_code == 200:
+        return 0
     crncy = [
         {'symbol': 'ETH', 'name': 'Ethereum', 'min_size': 0.01,
          'currency_limit': 9000, 'ipo_date': '2014-1-1'},
@@ -17,26 +20,31 @@ def create_currencies(client):
          'currency_limit': 90000, 'ipo_date': '2014-1-1'}
     ]
     for c in crncy:
-        client.post(URL_BASE + 'currencies',
-                    data=json.dumps(c),
-                    content_type='application/json')
+        rv = client.post(URL_BASE + 'currencies',
+                         data=json.dumps(c),
+                         content_type='application/json')
     return 0
 
 
 def create_exchanges(client):
+    exchanges = client.get(URL_BASE + 'exchanges/')
+    if exchanges.status_code == 200:
+        return 0
     exchanges = [
         {'name': 'Coinbase', 'url': 'http://boo.yah'},
         {'name': 'GDAX', 'url': 'http://api.gdax.com'}
     ]
     for x in exchanges:
-        client.post(URL_BASE + 'exchanges',
-                    data=json.dumps(x),
-                    content_type='application/json')
+        rv = client.post(URL_BASE + 'exchanges',
+                         data=json.dumps(x),
+                         content_type='application/json')
     return 0
 
 
 def create_markets(client):
-    create_products(client)
+    markets = client.get(URL_BASE + 'markets/')
+    if markets.status_code == 200:
+        return 0
     mkt = [
         {'timestamp': '2017-8-13 12:54:00', 'sequence': 12345,
          'product_id': 1, 'bid_price': 294.5, 'bid_size': 200,
@@ -52,13 +60,16 @@ def create_markets(client):
          'ask_parties': 5},
     ]
     for m in mkt:
-        client.post(URL_BASE + 'markets',
-                    data=json.dumps(m),
-                    content_type='application/json')
+        rv = client.post(URL_BASE + 'markets',
+                         data=json.dumps(m),
+                         content_type='application/json')
     return 0
 
 
 def create_products(client):
+    products = client.get(URL_BASE + 'products/')
+    if products.status_code == 200:
+        return 0
     create_currencies(client)
     prd = [
         {'symbol': 'ETH-USD', 'base_currency_id': 1, 'quote_currency_id': 2,
@@ -75,7 +86,38 @@ def create_products(client):
     return 0
 
 
+def create_transactions(client):
+    transactions = client.get(URL_BASE + 'transactions/')
+    if transactions.status_code == 200:
+        return 0
+    create_currencies(client)
+    create_exchanges(client)
+    create_wallets(client)
+    transactions = [
+        {'currency_id': 1, 'exchange_id': 1, 'wallet_id': 1,
+         'trade_time': '2017-8-11 13:54:00', 'quantity': 10,
+         'execution_price': 255.00, 'commission': 0.25 },
+        {'currency_id': 1, 'exchange_id': 1, 'wallet_id': 1,
+         'trade_time': '2017-8-13 12:54:00', 'quantity': -10,
+         'execution_price': 294.00, 'commission': 0.25},
+        {'currency_id': 3, 'exchange_id': 1, 'wallet_id': 2,
+         'trade_time': '2017-8-11 17:54:00', 'quantity': 1,
+         'execution_price': 2950.00, 'commission': 0.25},
+        {'currency_id': 3, 'exchange_id': 1, 'wallet_id': 2,
+         'trade_time': '2017-8-13 18:54:00', 'quantity': -1,
+         'execution_price': 3232.00, 'commission': 0.25}
+    ]
+    for t in transactions:
+        rv = client.post(URL_BASE + 'transactions',
+                         data=json.dumps(t),
+                         content_type='application/json')
+    return 0
+
+
 def create_users(client):
+    users = client.get(URL_BASE + 'users/')
+    if users.status_code == 200:
+        return 0
     users = [
         {'alias': 'jerry', 'password': 'Athea82', 'first_name': 'Jerry',
          'last_name': 'Garcia', 'email': 'jgarcia@gmail.com'},
@@ -92,4 +134,28 @@ def create_users(client):
         client.post(URL_BASE + 'users',
                     data=json.dumps(u),
                     content_type='application/json')
+    return 0
+
+
+def create_wallets(client):
+    wallets = client.get(URL_BASE + 'wallets/')
+    if wallets.status_code == 200:
+        return 0
+    create_users(client)
+    create_exchanges(client)
+    create_currencies(client)
+    wallets = [
+        {'owner_id': 1, 'exchange_id': 1, 'currency_id': 1,
+         'name': 'Test Wallet 01', 'inception_date': '2016-12-31'},
+        {'owner_id': 2, 'exchange_id': 1, 'currency_id': 1,
+         'name': 'Test Wallet 02', 'inception_date': '2016-12-31'},
+        {'owner_id': 3, 'exchange_id': 1, 'currency_id': 1,
+         'name': 'Test Wallet 03', 'inception_date': '2016-12-31'},
+        {'owner_id': 4, 'exchange_id': 1, 'currency_id': 1,
+         'name': 'Test Wallet 04', 'inception_date': '2016-12-31'},
+    ]
+    for w in wallets:
+        rv = client.post(URL_BASE + 'wallets',
+                         data=json.dumps(w),
+                         content_type='application/json')
     return 0

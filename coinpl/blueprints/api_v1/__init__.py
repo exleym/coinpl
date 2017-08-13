@@ -61,8 +61,20 @@ from . resources.products import (create_product,
                                  update_product,
                                  delete_product)
 
+from . resources.transactions import (create_transaction,
+                                      read_transaction_by_id,
+                                      read_transactions,
+                                      update_transaction,
+                                      delete_transaction)
+
 from . resources.users import (create_user,
                                read_user_by_id,
                                read_users,
                                update_user,
                                delete_user)
+
+from . resources.wallets import (create_wallet,
+                                 read_wallet_by_id,
+                                 read_wallets,
+                                 update_wallet,
+                                 delete_wallet)

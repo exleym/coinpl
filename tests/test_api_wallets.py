@@ -1,7 +1,8 @@
 import json
 import unittest
 from coinpl import create_app
-from tests import create_products, create_markets
+from tests import (create_currencies, create_exchanges, create_users,
+                   create_wallets)
 
 
 class TestModels(unittest.TestCase):
@@ -27,40 +28,39 @@ class TestModels(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_create_market(self):
+    def test_create_wallet(self):
         with self.app.test_request_context():
-            create_products(self.client)
+            create_currencies(self.client)
+            create_exchanges(self.client)
+            create_users(self.client)
+
             dta = {
-                'timestamp': '2017-8-13 12:54:00',
-                'sequence': 99999,
-                'product_id': 1,
-                'bid_price': 294.5,
-                'bid_size': 200,
-                'bid_parties': 4,
-                'ask_price': 296.13,
-                'ask_size': 344.24,
-                'ask_parties': 8
+                "owner_id": 1,
+                "exchange_id": 1,
+                "currency_id": 1,
+                "name": "Test Wallet!",
+                "inception_date": '2017-1-1'
             }
-            rv = self.create_resource('markets', dta)
+            rv = self.create_resource('wallets', dta)
             data = json.loads(rv.data)
-            self.assertEqual(data["sequence"], 99999)
+            self.assertEqual(data["currency_id"], 1)
 
-    def test_get_market(self):
+    def test_get_wallet(self):
         with self.app.test_request_context():
-            create_markets(self.client)
-            resp = self.get_resource('market', resource_id=1)
+            create_wallets(self.client)
+            resp = self.get_resource('wallet', resource_id=1)
             data = json.loads(resp.data)
-            self.assertEqual(data['sequence'], 12345)
+            self.assertEqual(data['currency_id'], 1)
 
-    def test_get_multiple_markets(self):
+    def test_get_multiple_wallets(self):
         with self.app.test_request_context():
-            create_markets(self.client)
-            resp = self.get_resource('markets')
+            create_wallets(self.client)
+            resp = self.get_resource('wallets')
             data = json.loads(resp.data)
-            self.assertEqual(len(data), 3)
-            self.assertEqual(data[0]['sequence'], 12345)
+            self.assertEqual(len(data), 4)
+            self.assertEqual(data[0]['owner_id'], 1)
 
-    def test_missing_market(self):
+    def test_missing_wallet(self):
         with self.app.test_request_context():
-            resp = self.get_resource('market', resource_id=1)
+            resp = self.get_resource('wallet', resource_id=1)
             self.assertEqual(resp.status_code, 404)

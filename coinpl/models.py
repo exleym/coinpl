@@ -163,9 +163,21 @@ class Transaction(Base):
     exchange = relationship('Exchange', backref='trades')
     wallet = relationship('Wallet', backref='trades')
 
+    @property
+    def shallow_json(self):
+        return {
+            'currency_id': self.currency_id,
+            'exchange_id': self.exchange_id,
+            'wallet_id': self.wallet_id,
+            'trade_time': self.trade_time.strftime('%Y-%m-%d %H:%M:%S'),
+            'quantity': self.quantity,
+            'execution_price': self.execution_price,
+            'commission': self.commission
+        }
+
     def __repr__(self):
         return "<Trade: {} {}>".format(
-            self.name,
+            self.currency.name,
             self.trade_time.strftime('%Y-%m-%d %H%M%S')
         )
 
@@ -229,10 +241,14 @@ class Wallet(Base):
     def __repr__(self):
         return "<Wallet: {}>".format(self.name)
 
+    @property
     def shallow_json(self):
         return {"id": self.id,
+                "owner_id": self.owner_id,
+                "exchange_id": self.exchange_id,
+                "currency_id": self.currency_id,
                 "name": self.name,
-                "inceptionDate": self.inception_date.strftime('%Y-%m-%d')
+                "inception_date": self.inception_date.strftime('%Y-%m-%d')
                 }
 
 
