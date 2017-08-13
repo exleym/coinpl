@@ -11,9 +11,16 @@ Currencies
 
 {% block content %}
 <div class="page-std">
-  <h1>Currency Page</h1>
+  <h1>Currency Management Page</h1>
       {% if currencies %}
-      <h4>Currency Comparison</h4>
+      <div>
+          <p>
+              This page displays all supported currencies, crypto and traditional
+              and is meant for the management of currency-specific data. For
+              Cross-currency exchange information, go to the <a href="#">Products</a>
+              page.
+          </p>
+      </div>
       <table class="table table-striped table-responsive">
         <thead><th>Currency</th><th>Symbol</th><th>Min Size</th><th>IPO Date</th><th>Coin Limit</th></thead>
         <tbody>

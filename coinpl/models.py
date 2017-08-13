@@ -32,7 +32,8 @@ class Market(Base):
             self.ask_price
         )
 
-    def to_json(self):
+    @property
+    def shallow_json(self):
         return {
             k: v for k, v in self.__dict__.items() if k != "_sa_instance_state"
         }
@@ -46,6 +47,18 @@ class Currency(Base):
     min_size = Column(Float)
     ipo_date = Column(Date)
     currency_limit = Column(Integer)
+
+    @property
+    def shallow_json(self):
+        data = {
+            "id": self.id,
+            "symbol": self.symbol,
+            "name": self.name,
+            "min_size": self.min_size,
+            "ipo_date": self.ipo_date,
+            "currency_limit": self.currency_limit
+        }
+        return data
 
     def __repr__(self):
         return "<Currency: {}>".format(self.symbol)
@@ -74,8 +87,9 @@ class Exchange(Base):
     name = Column(String(128), unique=True)
     url = Column(String(256))
 
-    def to_json(self):
-        return {"name": self.name, "url": self.url}
+    @property
+    def shallow_json(self):
+        return {"id": self.id, "name": self.name, "url": self.url}
 
     def __repr__(self):
         return "<Exchange: {}>".format(self.name)
@@ -165,7 +179,7 @@ class User(Base, UserMixin):
     updated = Column(DateTime, default=datetime.now, onupdate=datetime.now)
 
     @property
-    def json(self):
+    def shallow_json(self):
         return {k: v for k, v in self.__dict__.items()
                 if k not in "_sa_instance_state"}
 
