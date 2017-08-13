@@ -20,9 +20,9 @@ def create_currencies(client):
          'currency_limit': 90000, 'ipo_date': '2014-1-1'}
     ]
     for c in crncy:
-        rv = client.post(URL_BASE + 'currencies',
-                         data=json.dumps(c),
-                         content_type='application/json')
+        client.post(URL_BASE + 'currencies',
+                    data=json.dumps(c),
+                    content_type='application/json')
     return 0
 
 
@@ -34,15 +34,19 @@ def create_cuts(client):
     tstamp = "2017-8-1 17:00:00"
     tstamp2 = "2017-8-1 17:15:54"
     cuts = [
-        {"wallet_id": 1, "effective": tstamp, "cut_time": tstamp2, "pl_version_id": 1},
-        {"wallet_id": 2, "effective": tstamp, "cut_time": tstamp2, "pl_version_id": 1},
-        {"wallet_id": 3, "effective": tstamp, "cut_time": tstamp2, "pl_version_id": 1},
-        {"wallet_id": 4, "effective": tstamp, "cut_time": tstamp2, "pl_version_id": 1}
+        {"wallet_id": 1, "effective": tstamp, "cut_time": tstamp2,
+         "pl_version_id": 1},
+        {"wallet_id": 2, "effective": tstamp, "cut_time": tstamp2,
+         "pl_version_id": 1},
+        {"wallet_id": 3, "effective": tstamp, "cut_time": tstamp2,
+         "pl_version_id": 1},
+        {"wallet_id": 4, "effective": tstamp, "cut_time": tstamp2,
+         "pl_version_id": 1}
     ]
     for c in cuts:
-        rv = client.post(URL_BASE + 'cuts',
-                         data=json.dumps(c),
-                         content_type='application/json')
+        client.post(URL_BASE + 'cuts',
+                    data=json.dumps(c),
+                    content_type='application/json')
     return 0
 
 
@@ -55,9 +59,9 @@ def create_exchanges(client):
         {'name': 'GDAX', 'url': 'http://api.gdax.com'}
     ]
     for x in exchanges:
-        rv = client.post(URL_BASE + 'exchanges',
-                         data=json.dumps(x),
-                         content_type='application/json')
+        client.post(URL_BASE + 'exchanges',
+                    data=json.dumps(x),
+                    content_type='application/json')
     return 0
 
 
@@ -79,9 +83,9 @@ def create_holdings(client):
          "quantity": 140, "price": 300},
     ]
     for h in holdings:
-        rv = client.post(URL_BASE + 'holdings',
-                         data=json.dumps(h),
-                         content_type='application/json')
+        client.post(URL_BASE + 'holdings',
+                    data=json.dumps(h),
+                    content_type='application/json')
     return 0
 
 
@@ -93,7 +97,7 @@ def create_markets(client):
         {'timestamp': '2017-8-13 12:54:00', 'sequence': 12345,
          'product_id': 1, 'bid_price': 294.5, 'bid_size': 200,
          'bid_parties': 4, 'ask_price': 296.13, 'ask_size': 344.24,
-         'ask_parties': 8 },
+         'ask_parties': 8},
         {'timestamp': '2017-8-13 12:55:00', 'sequence': 12346,
          'product_id': 1, 'bid_price': 294.55, 'bid_size': 203.4,
          'bid_parties': 4, 'ask_price': 296.93, 'ask_size': 124.24,
@@ -104,9 +108,9 @@ def create_markets(client):
          'ask_parties': 5},
     ]
     for m in mkt:
-        rv = client.post(URL_BASE + 'markets',
-                         data=json.dumps(m),
-                         content_type='application/json')
+        client.post(URL_BASE + 'markets',
+                    data=json.dumps(m),
+                    content_type='application/json')
     return 0
 
 
@@ -140,7 +144,7 @@ def create_transactions(client):
     transactions = [
         {'currency_id': 1, 'exchange_id': 1, 'wallet_id': 1,
          'trade_time': '2017-8-11 13:54:00', 'quantity': 10,
-         'execution_price': 255.00, 'commission': 0.25 },
+         'execution_price': 255.00, 'commission': 0.25},
         {'currency_id': 1, 'exchange_id': 1, 'wallet_id': 1,
          'trade_time': '2017-8-13 12:54:00', 'quantity': -10,
          'execution_price': 294.00, 'commission': 0.25},
@@ -152,9 +156,9 @@ def create_transactions(client):
          'execution_price': 3232.00, 'commission': 0.25}
     ]
     for t in transactions:
-        rv = client.post(URL_BASE + 'transactions',
-                         data=json.dumps(t),
-                         content_type='application/json')
+        client.post(URL_BASE + 'transactions',
+                    data=json.dumps(t),
+                    content_type='application/json')
     return 0
 
 
@@ -199,7 +203,30 @@ def create_wallets(client):
          'name': 'Test Wallet 04', 'inception_date': '2016-12-31'},
     ]
     for w in wallets:
-        rv = client.post(URL_BASE + 'wallets',
-                         data=json.dumps(w),
-                         content_type='application/json')
+        client.post(URL_BASE + 'wallets',
+                    data=json.dumps(w),
+                    content_type='application/json')
+    return 0
+
+
+def create_wallet_data(client):
+    wallet_data = client.get(URL_BASE + 'wallet_data/')
+    if wallet_data.status_code == 200:
+        return 0
+    create_wallets(client)
+    create_cuts(client)
+    wallet_data = [
+        {'wallet_id': 1, 'cut_id': 1, 'effective': '2017-8-10', 'nav': 9000,
+         'invested_value': 5457.54},
+        {'wallet_id': 2, 'cut_id': 2, 'effective': '2017-8-10', 'nav': 8000,
+         'invested_value': 4457.54},
+        {'wallet_id': 3, 'cut_id': 3, 'effective': '2017-8-10', 'nav': 7000,
+         'invested_value': 3457.54},
+        {'wallet_id': 4, 'cut_id': 4, 'effective': '2017-8-10', 'nav': 6000,
+         'invested_value': 2457.54}
+    ]
+    for wd in wallet_data:
+        client.post(URL_BASE + 'wallet_data',
+                    data=json.dumps(wd),
+                    content_type='application/json')
     return 0

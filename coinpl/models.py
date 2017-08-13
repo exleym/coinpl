@@ -294,5 +294,17 @@ class WalletData(Base):
     wallet = relationship('Wallet', backref='services')
     cut = relationship('Cut', backref='wallet_data', uselist=False)
 
+    @property
+    def shallow_json(self):
+        return {
+            "id": self.id,
+            "wallet_id": self.wallet_id,
+            "cut_id": self.cut_id,
+            "effective": self.effective.strftime('%Y-%m-%d'),
+            "nav": self.nav,
+            "invested_value": self.invested_value,
+            "superceded": self.superceded
+        }
+
     def __repr__(self):
         return "<WalletData: {}>".format(self.name)

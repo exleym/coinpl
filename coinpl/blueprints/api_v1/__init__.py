@@ -90,3 +90,9 @@ from . resources.wallets import (create_wallet,
                                  read_wallets,
                                  update_wallet,
                                  delete_wallet)
+
+from . resources.wallet_data import (create_wallet_data,
+                                     read_wallet_data_by_id,
+                                     read_wallet_data,
+                                     update_wallet_data,
+                                     delete_wallet_data)
