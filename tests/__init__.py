@@ -31,8 +31,8 @@ def create_cuts(client):
     if cuts.status_code == 200:
         return 0
     create_wallets(client)
-    tstamp = "2017-8-10 17:00:00"
-    tstamp2 = "2017-8-10 17:15:54"
+    tstamp = "2017-8-1 17:00:00"
+    tstamp2 = "2017-8-1 17:15:54"
     cuts = [
         {"wallet_id": 1, "effective": tstamp, "cut_time": tstamp2, "pl_version_id": 1},
         {"wallet_id": 2, "effective": tstamp, "cut_time": tstamp2, "pl_version_id": 1},
@@ -57,6 +57,30 @@ def create_exchanges(client):
     for x in exchanges:
         rv = client.post(URL_BASE + 'exchanges',
                          data=json.dumps(x),
+                         content_type='application/json')
+    return 0
+
+
+def create_holdings(client):
+    cuts = client.get(URL_BASE + 'holdings/')
+    if cuts.status_code == 200:
+        return 0
+    create_currencies(client)
+    create_wallets(client)
+    create_cuts(client)
+    holdings = [
+        {"wallet_id": 1, "currency_id": 1, "cut_id": 1, "cut_date": "2017-8-1",
+         "quantity": 110, "price": 300},
+        {"wallet_id": 2, "currency_id": 1, "cut_id": 2, "cut_date": "2017-8-1",
+         "quantity": 120, "price": 300},
+        {"wallet_id": 3, "currency_id": 1, "cut_id": 3, "cut_date": "2017-8-1",
+         "quantity": 130, "price": 300},
+        {"wallet_id": 4, "currency_id": 1, "cut_id": 4, "cut_date": "2017-8-1",
+         "quantity": 140, "price": 300},
+    ]
+    for h in holdings:
+        rv = client.post(URL_BASE + 'holdings',
+                         data=json.dumps(h),
                          content_type='application/json')
     return 0
 

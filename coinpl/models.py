@@ -89,6 +89,18 @@ class Holding(Base):
     wallet = relationship('Wallet', backref='holdings')
     cut = relationship('Cut', backref='holdings')
 
+    @property
+    def shallow_json(self):
+        return {
+            "id": self.id,
+            "wallet_id": self.wallet_id,
+            "currency_id": self.currency_id,
+            "cut_id": self.cut_id,
+            "cut_date": self.cut_date.strftime('%Y-%m-%d'),
+            "quantity": self.quantity,
+            "price": self.price
+        }
+
     def __repr__(self):
         return "<Holding {:d}: {} {}>".format(self.id,
                                               self.currency.code,

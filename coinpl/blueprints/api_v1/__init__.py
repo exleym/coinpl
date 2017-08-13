@@ -55,6 +55,12 @@ from . resources.exchanges import (create_exchange,
                                    update_exchange,
                                    delete_exchange)
 
+from . resources.holdings import (create_holding,
+                                  read_holding_by_id,
+                                  read_holdings,
+                                  update_holding,
+                                  delete_holding)
+
 from . resources.markets import (create_market,
                                  read_market_by_id,
                                  read_markets,
