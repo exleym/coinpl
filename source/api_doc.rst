@@ -23,8 +23,8 @@ dockerized toolkit running as a virtual server locally and exposing its
 tools. If more power is needed, we can worry about scaling later.
 
 3.  Research tools to expose
-    a.  Get realtime prices and import / adapt to other datasets
-        (kaggle has one)
+
+    a.  Get realtime prices and import / adapt to other datasets (kaggle has one)
     b.  Implement abstract classes to provide backtesting tools.
         These tools should be easily extended into mock or real
         trading systems by switching a few toggles and coding in
@@ -51,12 +51,38 @@ seamlessly, which means implementing a full suite of resource management
 endpoints. These exist for all resources in the form of the following request
 types:
 
+
+Resource Creation
+^^^^^^^^^^^^^^^^^
+Resources are created via a POST request to the API endpoint, along with
+a JSON object containing (at a minimum) the required fields to initialize
+the object.
+
+The URL for the resource creation endpoints follows this pattern::
+
+   <BASE_URL>/api/v1.0/<resource_name>
+
+Where <resource_name> is the name of the collection. For example, to create
+a news Currency, one must POST to `currencies`.
+
+The POST request should come in the following form::
+
+    import requests
+    url = '/api/v1.0/currencies'
+    data = {
+        "symbol": "ETH",
+        "name": "Ethereum",
+        "min_size": 0.001,
+        "ipo_date": "2014-1-1",
+        "currency_limit": 100000
+    }
+    rv = request.post(url, data=data, content_type='application/json')
+
+The POST request will return a Response object with a status code and an
+attribute `data`.
+
 -   POST: create a new resource
 -   GET: read from resource table, either getting a single resource by <id> or
     retrieving all resources of that type.
 -   PUT: update a resource by sending a JSON package with terms to alter.
 -   DELETE: destroy a resource by sending a DELETE request with resource <id>.
-
-
-.. autoflask:: coinpl:create_app(env='prd')
-   :blueprints: api_v1
