@@ -103,3 +103,6 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# Shit i don't understand
+.DS_Store
