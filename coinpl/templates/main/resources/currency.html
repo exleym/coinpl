@@ -7,6 +7,12 @@
   {{ super() }}
 {% endblock %}
 
+{% block scripts %}
+  {{ super() }}
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+  <script src="https://code.highcharts.com/modules/exporting.js"></script>
+{% endblock %}
+
 {% block content %}
 <div class="page-std">
   <h1>{{ currency.name }}</h1>
@@ -18,5 +24,35 @@
     <li><b>Origin Date:</b> {% if currency.ipo_date %}{{ currency.ipo_date.strftime('%m/%d/%Y') }}{% endif %}</li>
     <li><b>Total Coins:</b> {% if currency.coin_limit %}{{ currency.coin_limit }}{% endif %}</li>
   </ul>
+  <div>
+    <div id="container"></div>
+  </div>
 </div>
+
+<script>
+$(function (data) {
+    Highcharts.chart('container', {
+        title: {
+            text: 'Ethereum Market on GDAX',
+            align: 'left'
+        },
+        subtitle: {
+            text: 'Simplified Market Structure',
+            align: 'left'
+        },
+        yAxis: {
+            title: {
+                text: 'Ethereum Price in USD',
+                align: 'high'
+            }
+        },
+        legend: false,
+        plotOptions: {series: {pointStart: 2010}},
+        series: [{
+            name: 'Installation',
+            data: [43934, 52503, 57177, 69658, 97031, 119931, 137133, 154175]
+        }]
+    });
+});
+</script>
 {% endblock %}

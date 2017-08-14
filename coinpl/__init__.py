@@ -1,9 +1,10 @@
 from flask import Flask, g
 from flask_bootstrap import Bootstrap
 from flask_login import LoginManager
+import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from coinpl.models import Wallet, User
+from coinpl.models import Base, User, Wallet
 from settings import config
 
 def create_app(env='prd', **config_overrides):
@@ -21,7 +22,7 @@ def create_app(env='prd', **config_overrides):
 
     # import blueprints
     from coinpl.blueprints.main import main
-    from coinpl.blueprints.api_v1.views import api_v1
+    from coinpl.blueprints.api_v1 import api_v1
     from coinpl.blueprints.auth.views import auth
 
     # register blueprints
@@ -31,6 +32,11 @@ def create_app(env='prd', **config_overrides):
 
     with app.app_context():
         get_db(app)
+
+    if app.config['CREATE_DB']:
+        eng = get_db(app)
+        from coinpl.models import Base
+        Base.metadata.create_all(bind=eng)
 
     @login_manager.user_loader
     def load_user(user_id):
@@ -52,5 +58,11 @@ def get_session(app):
 
 
 def connect(app):
-    eng = create_engine(app.config['DB_URI'])
+    if os.getenv('DB_URI'):
+       eng = create_engine(os.getenv('DB_URI'))
+    else:
+        eng = create_engine(app.config['DB_URI'])
+    if app.config['CREATE_DB']:
+        Base.metadata.create_all(eng)
     return eng
+

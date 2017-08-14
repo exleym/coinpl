@@ -9,6 +9,104 @@ from werkzeug.security import check_password_hash, generate_password_hash
 Base = declarative_base()
 
 
+class Currency(Base):
+    __tablename__ = 'currencies'
+    id = Column(Integer, primary_key=True)
+    symbol = Column(String(3), unique=True, nullable=False)
+    name = Column(String(128), unique=True, nullable=False)
+    min_size = Column(Float)
+    ipo_date = Column(Date)
+    currency_limit = Column(Integer)
+
+    @property
+    def shallow_json(self):
+        data = {
+            "id": self.id,
+            "symbol": self.symbol,
+            "name": self.name,
+            "min_size": self.min_size,
+            "ipo_date": self.ipo_date,
+            "currency_limit": self.currency_limit
+        }
+        return data
+
+    def __repr__(self):
+        return "<Currency: {}>".format(self.symbol)
+
+
+class Cut(Base):
+    __tablename__ = 'cuts'
+    id = Column(Integer, primary_key=True)
+    wallet_id = Column(Integer, ForeignKey('wallets.id'))
+    effective = Column(DateTime)
+    cut_time = Column(DateTime, default=datetime.now)
+    pl_version_id = Column(Integer, ForeignKey('pl_versions.id'))
+
+
+    wallet = relationship('Wallet', backref='cuts')
+    pl_version = relationship('PLVersion', backref='cuts')
+
+    @property
+    def shallow_json(self):
+        return {
+            "id": self.id,
+            "wallet_id": self.wallet_id,
+            "effective": self.effective.strftime('%Y-%m-%d %H:%M:%S'),
+            "cut_time": self.cut_time.strftime('%Y-%m-%d %H%M%S'),
+            "pl_version_id": self.pl_version_id
+        }
+
+    def __repr__(self):
+        return "<Cut: {:d} ({})>".format(self.id,
+                                         self.cut_time.strftime('%Y-%m-%d'))
+
+
+class Exchange(Base):
+    __tablename__ = 'exchanges'
+    id = Column(Integer, primary_key=True)
+    name = Column(String(128), unique=True)
+    url = Column(String(256))
+
+    @property
+    def shallow_json(self):
+        return {"id": self.id, "name": self.name, "url": self.url}
+
+    def __repr__(self):
+        return "<Exchange: {}>".format(self.name)
+
+
+class Holding(Base):
+    __tablename__ = 'holdings'
+    id = Column(Integer, primary_key=True)
+    wallet_id = Column(Integer, ForeignKey('wallets.id'))
+    currency_id = Column(Integer, ForeignKey('currencies.id'))
+    cut_id = Column(Integer, ForeignKey('cuts.id'))
+    cut_date = Column(Date)
+    quantity = Column(Float)
+    price = Column(Float)
+
+    currency = relationship('Currency', backref='holdings')
+    wallet = relationship('Wallet', backref='holdings')
+    cut = relationship('Cut', backref='holdings')
+
+    @property
+    def shallow_json(self):
+        return {
+            "id": self.id,
+            "wallet_id": self.wallet_id,
+            "currency_id": self.currency_id,
+            "cut_id": self.cut_id,
+            "cut_date": self.cut_date.strftime('%Y-%m-%d'),
+            "quantity": self.quantity,
+            "price": self.price
+        }
+
+    def __repr__(self):
+        return "<Holding {:d}: {} {}>".format(self.id,
+                                              self.currency.code,
+                                              self.cut_date.strftime('%Y-%m-%d'))
+
+
 class Market(Base):
     __tablename__ = 'markets'
     id = Column(Integer, primary_key=True)
@@ -32,73 +130,11 @@ class Market(Base):
             self.ask_price
         )
 
-    def to_json(self):
+    @property
+    def shallow_json(self):
         return {
             k: v for k, v in self.__dict__.items() if k != "_sa_instance_state"
         }
-
-
-class Currency(Base):
-    __tablename__ = 'currencies'
-    id = Column(Integer, primary_key=True)
-    symbol = Column(String(3), unique=True, nullable=False)
-    name = Column(String(128), unique=True, nullable=False)
-    min_size = Column(Float)
-    ipo_date = Column(Date)
-    currency_limit = Column(Integer)
-
-    def __repr__(self):
-        return "<Currency: {}>".format(self.symbol)
-
-
-class Cut(Base):
-    __tablename__ = 'cuts'
-    id = Column(Integer, primary_key=True)
-    wallet_id = Column(Integer, ForeignKey('wallets.id'))
-    effective = Column(DateTime)
-    cut_time = Column(DateTime, default=datetime.now)
-    pl_version_id = Column(Integer, ForeignKey('pl_versions.id'))
-
-
-    wallet = relationship('Wallet', backref='cuts')
-    pl_version = relationship('PLVersion', backref='cuts')
-
-    def __repr__(self):
-        return "<Cut: {:d} ({})>".format(self.id,
-                                         self.cut_date.strftime('%Y-%m-%d'))
-
-
-class Exchange(Base):
-    __tablename__ = 'exchanges'
-    id = Column(Integer, primary_key=True)
-    name = Column(String(128), unique=True)
-    url = Column(String(256))
-
-    def to_json(self):
-        return {"name": self.name, "url": self.url}
-
-    def __repr__(self):
-        return "<Exchange: {}>".format(self.name)
-
-
-class Holding(Base):
-    __tablename__ = 'holdings'
-    id = Column(Integer, primary_key=True)
-    wallet_id = Column(Integer, ForeignKey('wallets.id'))
-    currency_id = Column(Integer, ForeignKey('currencies.id'))
-    cut_id = Column(Integer, ForeignKey('cuts.id'))
-    cut_date = Column(Date)
-    quantity = Column(Float)
-    price = Column(Float)
-
-    currency = relationship('Currency', backref='holdings')
-    wallet = relationship('Wallet', backref='holdings')
-    cut = relationship('Cut', backref='holdings')
-
-    def __repr__(self):
-        return "<Holding {:d}: {} {}>".format(self.id,
-                                              self.currency.code,
-                                              self.cut_date.strftime('%Y-%m-%d'))
 
 
 class PLVersion(Base):
@@ -125,6 +161,11 @@ class Product(Base):
     display_name = Column(String(7))
     margin_enabled = Column(Boolean)
 
+    @property
+    def shallow_json(self):
+        return {k: v for k, v in self.__dict__.items()
+                if k not in "_sa_instance_state"}
+
     def __repr__(self):
         return "<Product: {}>".format(self.display_name)
 
@@ -144,9 +185,21 @@ class Transaction(Base):
     exchange = relationship('Exchange', backref='trades')
     wallet = relationship('Wallet', backref='trades')
 
+    @property
+    def shallow_json(self):
+        return {
+            'currency_id': self.currency_id,
+            'exchange_id': self.exchange_id,
+            'wallet_id': self.wallet_id,
+            'trade_time': self.trade_time.strftime('%Y-%m-%d %H:%M:%S'),
+            'quantity': self.quantity,
+            'execution_price': self.execution_price,
+            'commission': self.commission
+        }
+
     def __repr__(self):
         return "<Trade: {} {}>".format(
-            self.name,
+            self.currency.name,
             self.trade_time.strftime('%Y-%m-%d %H%M%S')
         )
 
@@ -165,7 +218,7 @@ class User(Base, UserMixin):
     updated = Column(DateTime, default=datetime.now, onupdate=datetime.now)
 
     @property
-    def json(self):
+    def shallow_json(self):
         return {k: v for k, v in self.__dict__.items()
                 if k not in "_sa_instance_state"}
 
@@ -210,10 +263,14 @@ class Wallet(Base):
     def __repr__(self):
         return "<Wallet: {}>".format(self.name)
 
-    def to_json(self):
+    @property
+    def shallow_json(self):
         return {"id": self.id,
+                "owner_id": self.owner_id,
+                "exchange_id": self.exchange_id,
+                "currency_id": self.currency_id,
                 "name": self.name,
-                "inceptionDate": self.inception_date.strftime('%Y-%m-%d')
+                "inception_date": self.inception_date.strftime('%Y-%m-%d')
                 }
 
 
@@ -236,6 +293,18 @@ class WalletData(Base):
 
     wallet = relationship('Wallet', backref='services')
     cut = relationship('Cut', backref='wallet_data', uselist=False)
+
+    @property
+    def shallow_json(self):
+        return {
+            "id": self.id,
+            "wallet_id": self.wallet_id,
+            "cut_id": self.cut_id,
+            "effective": self.effective.strftime('%Y-%m-%d'),
+            "nav": self.nav,
+            "invested_value": self.invested_value,
+            "superceded": self.superceded
+        }
 
     def __repr__(self):
         return "<WalletData: {}>".format(self.name)

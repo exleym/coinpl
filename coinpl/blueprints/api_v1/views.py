@@ -10,38 +10,6 @@ from coinpl.models import Exchange, Market, Product, Wallet
 api_v1 = Blueprint('api_v1', __name__, url_prefix='/api/v1.0')
 
 
-@api_v1.route('/exchanges', methods=['POST'])
-def create_exchange():
-    session = get_session(current_app)
-    import pdb; pdb.set_trace()
-    package = request.get_json()
-    try:
-        assert "name" in package.keys()
-    except AssertionError:
-        raise KeyError("You must pass the appropriate keys to the endpoint")
-    session.add(Exchange(name=package["name"], url=package["url"]))
-    session.commit()
-    session.close()
-    return 200
-
-
-@api_v1.route('/exchanges/', methods=['GET'])
-def get_exchanges():
-    session = get_session(current_app)
-    exch = session.query(Exchange).all()
-    resp = [x.to_json() for x in exch]
-    return jsonify(resp)
-
-
-@api_v1.route('/exchanges/<int:exchange_id>', methods=['GET'])
-def get_exchange_by_id(exchange_id):
-    session = get_session(current_app)
-    exch = session.query(Exchange).filter(Exchange.id == exchange_id).first()
-    if not exch:
-        return jsonify({'Error': 404}), 404
-    return jsonify(exch.to_json()), 200
-
-
 @api_v1.route('/wallets', methods=['GET'])
 def wallets():
     session = get_session(current_app)
