@@ -1,6 +1,6 @@
 from datetime import datetime
-from sqlalchemy import ( Column, BigInteger, Boolean, Date, DateTime, Float,
-                         ForeignKey, Integer, String, Text )
+from sqlalchemy import (Column, BigInteger, Boolean, Date, DateTime, Float,
+                        ForeignKey, Integer, String, Text)
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from flask_login import UserMixin
@@ -42,7 +42,6 @@ class Cut(Base):
     cut_time = Column(DateTime, default=datetime.now)
     pl_version_id = Column(Integer, ForeignKey('pl_versions.id'))
 
-
     wallet = relationship('Wallet', backref='cuts')
     pl_version = relationship('PLVersion', backref='cuts')
 
@@ -52,7 +51,7 @@ class Cut(Base):
             "id": self.id,
             "wallet_id": self.wallet_id,
             "effective": self.effective.strftime('%Y-%m-%d %H:%M:%S'),
-            "cut_time": self.cut_time.strftime('%Y-%m-%d %H%M%S'),
+            "cut_time": self.cut_time.strftime('%Y-%m-%d %H:%M:%S'),
             "pl_version_id": self.pl_version_id
         }
 
@@ -102,9 +101,11 @@ class Holding(Base):
         }
 
     def __repr__(self):
-        return "<Holding {:d}: {} {}>".format(self.id,
-                                              self.currency.code,
-                                              self.cut_date.strftime('%Y-%m-%d'))
+        return "<Holding {}: {} {}>".format(self.id,
+                                            self.currency.code,
+                                            self.cut_date.strftime(
+                                                '%Y-%m-%d'
+                                            ))
 
 
 class Market(Base):
@@ -146,7 +147,9 @@ class PLVersion(Base):
 
     def __repr__(self):
         return "<PLVersion: {:d} ({})>".format(self.id,
-                                               self.release_date.strftime('%Y-%m-%d'))
+                                               self.release_date.strftime(
+                                                   '%Y-%m-%d'
+                                               ))
 
 
 class Product(Base):
@@ -200,7 +203,7 @@ class Transaction(Base):
     def __repr__(self):
         return "<Trade: {} {}>".format(
             self.currency.name,
-            self.trade_time.strftime('%Y-%m-%d %H%M%S')
+            self.trade_time.strftime('%Y-%m-%d %H:%M:%S')
         )
 
 
@@ -233,7 +236,7 @@ class User(Base, UserMixin):
     def verify_password(self, password):
         print("checking password hash ...")
         if check_password_hash(self.password_hash, password):
-            print ("password checks out!")
+            print("password checks out!")
         else:
             print("wrong password!")
         return check_password_hash(self.password_hash, password)
