@@ -117,3 +117,42 @@ The docker images used in this system are:
 *   `coinpl_db_1`: Linux image running MySQL. DB initialized from SQLAlchemy 
     models.
 *   `coinpl_mongo_1`: MongoDB image for persisting GDAX order books
+*   `coinpl_server_1`: nginx server for reverse-proxy and serving static 
+    content.
+    
+#### Flask
+The application itself is primarily built in flask. Eventually the front-end 
+will be replaced my a more modern framework, but the API will probably always 
+be in Flask. 
+
+>Flask is a microframework for Python based on Werkzeug, Jinja 2 and good 
+intentions.  
+
+-[Flask's Site](http://flask.pocoo.org/).
+
+#### Gunicorn
+We Serve the application with Gunicorn python HTTP server.
+
+>Gunicorn 'Green Unicorn' is a Python WSGI HTTP Server for UNIX. It's a pre-fork
+ worker model. The Gunicorn server is broadly compatible with various web 
+frameworks, simply implemented, light on server resources, and fairly speedy.  
+
+-[Gunicorn's Site](http://gunicorn.org/).
+    
+#### NGINX
+We use nginx as a reverse-proxy for the gunicorn server and as a server for
+static content. The details of the setup can be found in 
+[docker-compose.yml](./docker-compose.yml) and the [nginx conf](./nginx/conf.d)
+file. For more details on the setup of this system, see the full documentation.
+
+>nginx [engine x] is an HTTP and reverse proxy server, a mail proxy server, 
+and a generic TCP/UDP proxy server, originally written by Igor Sysoev. For a 
+long time, it has been running on many heavily loaded Russian sites  
+
+-[nginx Site](https://nginx.org/en/)
+
+#### Relational Data (MySQL) 
+
+#### Non-relational Data (MongoDB) 
+
+#### ORM
