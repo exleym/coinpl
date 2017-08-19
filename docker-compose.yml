@@ -1,9 +1,19 @@
 version: '2'
 services:
+  server:
+    restart: always
+    image: nginx
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./coinpl/static:/coinpl/coinpl/static
+    links:
+      - web:web
+    ports:
+      - "80:80"
   web:
     build: .
     ports:
-      - "5000:5000"
+      - "8000:8000"
     volumes:
       - /opt/coinpl:/coinpl
     links:
@@ -11,6 +21,7 @@ services:
     container_name: coinpl_web_1
     depends_on:
       - db
+      - mongo
   db:
     image: mysql:5.7
     restart: always
@@ -18,4 +29,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: rootpass
       MYSQL_DATABASE: coinpl
-
+  mongo:
+    image: mongo:3.0.15
+    restart: always
+    container_name: coinpl_mongo_1
