@@ -1,8 +1,16 @@
 {% macro wallets(user) -%}
 {% if user.wallets %}
-  <ul>
+  <ul class="wallets">
   {% for wallet in user.wallets %}
-    <li><a href="{{ url_for('main.wallet', wallet_id=wallet.id) }}">{{ wallet.name }}</a></li>
+    <li>
+      <img src="{{ url_for('static', filename='img/currency.png') }}" />
+      <h3><a href="{{ url_for('main.wallet', wallet_id=wallet.id) }}">{{ wallet.name }}</a></h3>
+      <p>
+        Spicy jalapeno bacon ipsum dolor amet shoulder t-bone shank brisket,
+        pork dolore ut nulla. Deserunt sausage pariatur chuck anim, capicola
+        proident. Consequat jowl beef ribs rump doner brisket et andouille.
+      </p>
+    </li>
   {% endfor %}
   <li><a href="{{ url_for('main.add_wallet') }}">Add Wallet</a></li>
   </ul>
