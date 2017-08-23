@@ -7,14 +7,22 @@
 
 {% block css %}
   {{ super() }}
+  <link rel="stylesheet" href="{{ url_for('static', filename='CSS/wallets.css') }}">
 {% endblock %}
 
 {% block content %}
 <div class="page-std">
   <h1>User Page for {{ user.alias }}</h1>
     {% if user.equals(current_user) %}
-      <h4>Welcome to Your User Page, {{ user.first_name }}!</h4>
-      {{ wallets(user) }}
+      <div class="col-md-3">
+        <div class="avatar">
+          <img src="{{ url_for('static', filename='img/krieger.jpg') }}">
+        </div>
+        <h4>Welcome to Your User Page, {{ user.first_name }}!</h4>
+      </div>
+      <div class="col-md-9">
+        {{ wallets(user) }}
+      </div>
     {% else %}
       <h4>Welcome to {{ user.first_name }}'s Page, you creepy fuck!</h4>
     {% endif %}

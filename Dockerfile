@@ -11,8 +11,8 @@ ADD . .
 # dependencies
 RUN pip install -r requirements.txt
 
-# listening on port 5000
-EXPOSE 5000
+# listening on port 8000
+EXPOSE 8000
 
 # run
-CMD python manage.py runserver
+CMD gunicorn run:app -b :8000 --name app --log-level=debug --log-file=-
