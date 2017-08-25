@@ -9,8 +9,9 @@
 
 {% block scripts %}
   {{ super() }}
-  <script src="https://code.highcharts.com/highcharts.js"></script>
-  <script src="https://code.highcharts.com/modules/exporting.js"></script>
+  <script src="https://code.highcharts.com/stock/highstock.js"></script>
+  <script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+  <script src="{{ url_for('static', filename='scripts/charts.js') }}"></script>
 {% endblock %}
 
 {% block content %}
@@ -29,28 +30,37 @@
   </div>
 </div>
 
+<!--<script>-->
+  <!--$.get("{{ url_for('api_v1.read_markets_for_product', product_id=user_product.id) }}", function(data, status){-->
+        <!--line(-->
+            <!--data, "container", "{{ currency.name }} Market on GDAX",-->
+            <!--"Simplified Market Structure", "{{ currency.name }} price in USD"-->
+        <!--)-->
+    <!--});-->
+<!--</script>-->
+
 <script>
-$(function (data) {
-    Highcharts.chart('container', {
+  $.getJSON('https://www.highcharts.com/samples/data/jsonp.php?filename=aapl-c.json&callback=?', function (data) {
+    // Create the chart
+    Highcharts.stockChart('container', {
+
+
+        rangeSelector: {
+            selected: 1
+        },
+
         title: {
-            text: 'Ethereum Market on GDAX',
+            text: '{{ currency.name }} Price in USD',
             align: 'left'
         },
-        subtitle: {
-            text: 'Simplified Market Structure',
-            align: 'left'
-        },
-        yAxis: {
-            title: {
-                text: 'Ethereum Price in USD',
-                align: 'high'
-            }
-        },
-        legend: false,
-        plotOptions: {series: {pointStart: 2010}},
+
         series: [{
-            name: 'Installation',
-            data: [43934, 52503, 57177, 69658, 97031, 119931, 137133, 154175]
+            name: '{{ currency.symbol }}',
+            data: data,
+            tooltip: {
+                valueDecimals: 2
+            },
+            color: '#F66733'
         }]
     });
 });

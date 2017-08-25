@@ -6,7 +6,7 @@ from sqlalchemy.orm import relationship
 from flask_login import UserMixin
 from werkzeug.security import check_password_hash, generate_password_hash
 
-Base = declarative_base()
+from coinpl.models import Base
 
 
 class Currency(Base):
@@ -219,6 +219,9 @@ class User(Base, UserMixin):
     admin = Column(Boolean, default=False)
     created = Column(DateTime, default=datetime.now)
     updated = Column(DateTime, default=datetime.now, onupdate=datetime.now)
+    #base_currency_id = Column(Integer, ForeignKey('currencies.id'))
+
+    #base_currency = relationship('Currency', backref='base_users')
 
     @property
     def shallow_json(self):

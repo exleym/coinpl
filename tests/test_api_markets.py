@@ -52,6 +52,14 @@ class TestModels(unittest.TestCase):
             data = json.loads(resp.data)
             self.assertEqual(data['sequence'], 12345)
 
+    def test_get_market_by_product(self):
+        with self.app.test_request_context():
+            create_markets(self.client)
+            url = '/api/v1.0/product/1/markets/'
+            resp = self.client.get(url, content_type='application/json')
+            data = json.loads(resp.data)
+            self.assertEqual(len(data), 2)
+
     def test_get_multiple_markets(self):
         with self.app.test_request_context():
             create_markets(self.client)

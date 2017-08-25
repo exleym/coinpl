@@ -103,7 +103,7 @@ def create_markets(client):
          'bid_parties': 4, 'ask_price': 296.93, 'ask_size': 124.24,
          'ask_parties': 2},
         {'timestamp': '2017-8-13 12:56:00', 'sequence': 12347,
-         'product_id': 1, 'bid_price': 294.5, 'bid_size': 452.46,
+         'product_id': 2, 'bid_price': 294.5, 'bid_size': 452.46,
          'bid_parties': 11, 'ask_price': 295.67, 'ask_size': 110.83,
          'ask_parties': 5},
     ]

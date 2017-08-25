@@ -62,6 +62,15 @@ def read_markets():
     return jsonify([market.shallow_json for market in markets]), 200
 
 
+@api_v1.route('/product/<int:product_id>/markets/')
+def read_markets_for_product(product_id):
+    session = get_session(current_app)
+    markets = session.query(Market).filter(Market.product_id==product_id).all()
+    if not markets:
+        return error_out(MissingResourceError('Market'))
+    return jsonify([market.shallow_json for market in markets]), 200
+
+
 @api_v1.route('/market/<int:market_id>', methods=['PUT'])
 def update_market(market_id):
     """ PUT request to /api/market/<exchane_id> will update Market object
