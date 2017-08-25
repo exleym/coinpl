@@ -40,10 +40,9 @@
 <!--</script>-->
 
 <script>
-  $.getJSON('https://www.highcharts.com/samples/data/jsonp.php?filename=aapl-c.json&callback=?', function (data) {
+  $.getJSON("{{ url_for('api_v1.read_hs_prices', product_id=8, exchange_id=2, source_id=2, startDate='2011-1-1') }}", function (data) {
     // Create the chart
     Highcharts.stockChart('container', {
-
 
         rangeSelector: {
             selected: 1

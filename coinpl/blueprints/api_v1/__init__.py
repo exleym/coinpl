@@ -96,3 +96,6 @@ from . resources.wallet_data import (create_wallet_data,
                                      read_wallet_data,
                                      update_wallet_data,
                                      delete_wallet_data)
+
+from . market_data.daily_prices import (read_daily_prices,
+                                        read_hs_prices)

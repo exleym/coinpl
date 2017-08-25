@@ -55,8 +55,8 @@ def create_exchanges(client):
     if exchanges.status_code == 200:
         return 0
     exchanges = [
-        {'name': 'Coinbase', 'url': 'http://boo.yah'},
-        {'name': 'GDAX', 'url': 'http://api.gdax.com'}
+        {'name': 'Coinbase', 'symbol': 'COINBASE', 'url': 'http://boo.yah', 'active': True},
+        {'name': 'GDAX', 'symbol': 'GDAX', 'url': 'http://api.gdax.com', 'active': True}
     ]
     for x in exchanges:
         client.post(URL_BASE + 'exchanges',

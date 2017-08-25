@@ -1,12 +1,17 @@
 from datetime import datetime
 from sqlalchemy import (Column, BigInteger, Boolean, Date, DateTime, Float,
-                        ForeignKey, Integer, String, Text)
-from sqlalchemy.ext.declarative import declarative_base
+                        ForeignKey, Integer, String, Table, Text)
 from sqlalchemy.orm import relationship
 from flask_login import UserMixin
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from coinpl.models import Base
+
+
+exchange_sources = Table('exchange_sources', Base.metadata,
+    Column('exchange_id', Integer, ForeignKey('exchanges.id')),
+    Column('source_id', Integer, ForeignKey('data_sources.id'))
+)
 
 
 class Currency(Base):
@@ -60,15 +65,39 @@ class Cut(Base):
                                          self.cut_time.strftime('%Y-%m-%d'))
 
 
+class DataSource(Base):
+    __tablename__ = 'data_sources'
+    id = Column(Integer, primary_key=True)
+    name = Column(String(64))
+    url = Column(String(256))
+
+    def __repr__(self):
+        return "<DataSource: {}>".format(self.name)
+
+    @property
+    def shallow_json(self):
+        return {
+            k: v for k, v in self.__dict__.items() if k != "_sa_instance_state"
+        }
+
+
 class Exchange(Base):
     __tablename__ = 'exchanges'
     id = Column(Integer, primary_key=True)
     name = Column(String(128), unique=True)
+    symbol = Column(String(8), unique=True)
     url = Column(String(256))
+    active = Column(Boolean)
+
+    sources = relationship('DataSource', secondary=exchange_sources)
 
     @property
     def shallow_json(self):
-        return {"id": self.id, "name": self.name, "url": self.url}
+        return {"id": self.id,
+                "name": self.name,
+                "symbol": self.symbol,
+                "url": self.url,
+                "active": self.active}
 
     def __repr__(self):
         return "<Exchange: {}>".format(self.name)

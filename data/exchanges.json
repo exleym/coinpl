@@ -1,0 +1,30 @@
+[
+  {
+    "name": "ANX",
+    "symbol": "ANXHK",
+    "url": "https://anxbtc.com/",
+    "active": false,
+    "quandl_data": true
+  },
+  {
+    "name": "Bitstamp",
+    "symbol": "BITSTAMP",
+    "url": "https://www.bitstamp.net/",
+    "active": true,
+    "quandl_data": true
+  },
+  {
+    "name": "Coinbase",
+    "symbol": "COINBASE",
+    "url": "https://www.coinbase.com/",
+    "active": true,
+    "quandl_data": false
+  },
+  {
+    "name": "GDAX",
+    "symbol": "GDAX",
+    "url": "https://www.gdax.com/",
+    "active": true,
+    "quandl_data": false
+  }
+]

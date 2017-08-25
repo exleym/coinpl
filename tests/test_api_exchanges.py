@@ -31,7 +31,9 @@ class TestModels(unittest.TestCase):
         with self.app.test_request_context():
             exchange = {
                 'name': 'Test Exchange 01',
-                'url': 'http://foo.bar/1'
+                'symbol': 'TEST',
+                'url': 'http://foo.bar/1',
+                'active': True
             }
             rv = self.create_resource('exchanges', exchange)
             data = json.loads(rv.data)
