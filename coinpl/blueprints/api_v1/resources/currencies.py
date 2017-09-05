@@ -13,7 +13,7 @@ from coinpl.blueprints.api_v1 import api_v1, error_out, verify_required_fields
 # API Routes for accessing and managing currency information
 # With these API endpoints, users can retrieve currency information by id,
 # retrieve a list of currencies, add new currencies, update existing currencies.
-@api_v1.route('/currencies', methods=['POST'])
+@api_v1.route('/currency', methods=['POST'])
 def create_currency():
     """ POST to /api/v1.0/currencies will create a new Currency object
     """
@@ -41,14 +41,17 @@ def create_currency():
 
 @api_v1.route('/currency/<int:currency_id>', methods=['GET'])
 def read_currency_by_id(currency_id):
+    shallow = False if request.args.get('shallow') == 'false' else True
     session = get_session(current_app)
     currency = session.query(Currency).filter(Currency.id == currency_id).first()
     if not currency:
         return error_out(MissingResourceError('Currency'))
-    return jsonify(currency.shallow_json), 200
+    if shallow:
+        return jsonify(currency.shallow_json), 200
+    return jsonify(currency.json), 200
 
 
-@api_v1.route('/currencies/', methods=['GET'])
+@api_v1.route('/currency/', methods=['GET'])
 def read_currencies():
     session = get_session(current_app)
     currencies = session.query(Currency).all()
@@ -57,8 +60,8 @@ def read_currencies():
     return jsonify([currency.shallow_json for currency in currencies]), 200
 
 
-@api_v1.route('/currency/<int:currency_id>', methods=['PUT'])
-def update_currency(currency_id):
+@api_v1.route('/currency', methods=['PUT'])
+def update_currency():
     """ PUT request to /api/currency/<currency_id> will update Currency object
         <id> with fields passed
     """
@@ -66,7 +69,7 @@ def update_currency(currency_id):
     put_data = request.json
     if not put_data:
         return error_out(MissingJSONError())
-    currency = session.query(Currency).filter(Currency.id == currency_id).first()
+    currency = session.query(Currency).filter(Currency.id == put_data['id']).first()
     if not currency:
         return error_out(MissingResourceError('Currency'))
     for k, v in put_data.items():

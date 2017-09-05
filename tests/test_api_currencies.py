@@ -36,7 +36,7 @@ class TestModels(unittest.TestCase):
                 'ipo_date': '2014-1-1',
                 'currency_limit': 9000
             }
-            rv = self.create_resource('currencies', currency)
+            rv = self.create_resource('currency', currency)
             data = json.loads(rv.data)
             self.assertEqual(data["symbol"], "TC1")
             self.assertEqual(data["id"], 1)
@@ -51,7 +51,7 @@ class TestModels(unittest.TestCase):
     def test_get_multiple_currencies(self):
         with self.app.test_request_context():
             create_currencies(self.client)
-            resp = self.get_resource('currencies')
+            resp = self.get_resource('currency')
             data = json.loads(resp.data)
             self.assertEqual(len(data), 3)
             self.assertEqual(data[0]['name'], 'Ethereum')

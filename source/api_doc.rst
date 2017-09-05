@@ -81,8 +81,83 @@ The POST request should come in the following form::
 The POST request will return a Response object with a status code and an
 attribute `data`.
 
--   POST: create a new resource
+
+Resource Retrieval
+^^^^^^^^^^^^^^^^^^
+Resources can be retrieved from the server using a variety of GET requests to
+different endpoints. The basic profile of the resource retrieval endpoint set
+is detailed below. For resource-specific endpoints like filtering a resource
+by non-primary-key fields, see the Swagger docs.
+
+GET Endpoints:
+-   get_resource_by_id(resource_id): request a single resource from the API
+    by its primary key id.
+-   get_resources(): request an array of all available resource objects. Note,
+    this only works on resources with reasonably small set size. Large sets
+    like Intraday Price will not be available through this endpoint.
+
+
+Resource Alteration
+^^^^^^^^^^^^^^^^^^^
+Some resources can and should be altered from time to time, and if they should,
+we expose a PUT endpoint that allows clients to alter an existing resource.
+There are two standard ways to implement this type of endpoint: 1) force the
+user to PUT the entire object to be altered (retrieve the object, make an
+alteration, and put the object back to the API) and 2) allow the user to PUT
+just the values that should be changed.
+
+NOTE: Unsure which of these we should use
+
+A Python implementation of the full-object PUT is shown here in an interactive
+session::
+
+    >>> import requests, json
+    >>> url = '/api/v1.0/currency/1'
+    >>> currency = request.get(url).data
+    >>> print(currency)
+    {
+        "symbol": "ETH",
+        "name": "Ethereum",
+        "min_size": 0.001,
+        "ipo_date": "2014-1-1",
+        "currency_limit": 100000
+    }
+    >>> currency["currency_limit"] = 9000
+    >>> currency["name"] = "OprahCoin"
+    >>> request.put(url, currency, content_type='application/json')
+    >>> currency = request.get(url).data
+    >>> print(currency)
+    {
+        "symbol": "ETH",
+        "name": "OprahCoin",
+        "min_size": 0.001,
+        "ipo_date": "2014-1-1",
+        "currency_limit": 9000
+    }
+
+Where the object is requested, altered, and finally put back to the API, before
+the correct persisting of the change server-side is verified by the user.
+
+
+Resource Deletion
+^^^^^^^^^^^^^^^^^
+Deleting a resource is a very simple process, if the user is authorized to
+make the deletion. Most DELETE requests will require some elevated privilege if
+they are not targeted at resources belonging to the user themself. Additionally,
+some DELETE requests do not actually delete the resource in question, but rather
+move it to a state in which it can no-longer be retrieved by non-administrative
+users. These cases only exist to maintain auditability of the system.
+
+
 -   GET: read from resource table, either getting a single resource by <id> or
     retrieving all resources of that type.
 -   PUT: update a resource by sending a JSON package with terms to alter.
 -   DELETE: destroy a resource by sending a DELETE request with resource <id>.
+
+For a more thorough documentation of the API endpoints and how to use them,
+see the Swagger Docs for this project.
+
+Note: look into the idea of embedding Swagger doc and Sphinx doc into the
+same project documentation site. Perhaps this should all just be served as
+a static page as part of the actual web-app?
+

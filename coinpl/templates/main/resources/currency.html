@@ -9,8 +9,8 @@
 
 {% block scripts %}
   {{ super() }}
-  <script src="https://code.highcharts.com/stock/highstock.js"></script>
-  <script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+  <script src="{{ url_for('static', filename='scripts/highstock.js') }}"></script>
+  <script src="{{ url_for('static', filename='scripts/exporting.js') }}"></script>
   <script src="{{ url_for('static', filename='scripts/charts.js') }}"></script>
 {% endblock %}
 
@@ -19,25 +19,27 @@
   <h1>{{ currency.name }}</h1>
   <h4><a href="{{ url_for('main.currencies') }}">Back to Currencies</a></h4>
   <div class="col-md-12">
-  {{ markets(market) }}
+    {% if market %}
+      {{ markets(market) }}
+    {% endif %}
   </div>
   <ul>
     <li><b>Origin Date:</b> {% if currency.ipo_date %}{{ currency.ipo_date.strftime('%m/%d/%Y') }}{% endif %}</li>
     <li><b>Total Coins:</b> {% if currency.coin_limit %}{{ currency.coin_limit }}{% endif %}</li>
   </ul>
+  {% if currency.products %}
+    <div>
+      <ul>
+        {% for p in currency.products %}
+        <li><a href="{{ url_for('main.product', product_id=p.id) }}">{{ p.symbol }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
   <div>
     <div id="container"></div>
   </div>
 </div>
-
-<!--<script>-->
-  <!--$.get("{{ url_for('api_v1.read_markets_for_product', product_id=user_product.id) }}", function(data, status){-->
-        <!--line(-->
-            <!--data, "container", "{{ currency.name }} Market on GDAX",-->
-            <!--"Simplified Market Structure", "{{ currency.name }} price in USD"-->
-        <!--)-->
-    <!--});-->
-<!--</script>-->
 
 <script>
   $.getJSON("{{ url_for('api_v1.read_hs_prices', product_id=8, exchange_id=2, source_id=2, startDate='2011-1-1') }}", function (data) {

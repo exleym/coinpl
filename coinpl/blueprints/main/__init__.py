@@ -57,10 +57,14 @@ from coinpl.blueprints.main.resources.currencies import (
 from coinpl.blueprints.main.resources.exchanges import (
     add_exchange,
     exchange,
-    exchanges
+    exchanges,
+    exchange_settings
 )
 from coinpl.blueprints.main.resources.wallets import (
     add_wallet,
     wallet,
     wallets
+)
+from coinpl.blueprints.main.resources.products import (
+    product
 )

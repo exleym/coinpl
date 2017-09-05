@@ -1,0 +1,34 @@
+[
+  {
+    "exchange": "ANX",
+    "product": "BTC-USD"
+  },
+  {
+    "exchange": "Bitstamp",
+    "product": "BTC-USD"
+  },
+  {
+    "exchange": "Coinbase",
+    "product": "BTC-USD"
+  },
+  {
+    "exchange": "Coinbase",
+    "product": "ETH-USD"
+  },
+  {
+    "exchange": "Coinbase",
+    "product": "LTC-USD"
+  },
+  {
+    "exchange": "GDAX",
+    "product": "BTC-USD"
+  },
+  {
+    "exchange": "GDAX",
+    "product": "ETH-USD"
+  },
+  {
+    "exchange": "GDAX",
+    "product": "LTC-USD"
+  }
+]

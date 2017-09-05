@@ -16,6 +16,7 @@ class Config(object):
     API_PASS = '<GDAX API Passphrase>'
     DEBUG = True
     CREATE_DB = False
+    WTF_CSRF_ENABLED = False
 
 
 class ProductionConfig(Config):

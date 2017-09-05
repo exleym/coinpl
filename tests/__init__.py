@@ -8,7 +8,7 @@ URL_BASE = '/api/v1.0/'
 
 
 def create_currencies(client):
-    currencies = client.get(URL_BASE + 'currencies/')
+    currencies = client.get(URL_BASE + 'currency/')
     if currencies.status_code == 200:
         return 0
     crncy = [
@@ -20,7 +20,7 @@ def create_currencies(client):
          'currency_limit': 90000, 'ipo_date': '2014-1-1'}
     ]
     for c in crncy:
-        client.post(URL_BASE + 'currencies',
+        client.post(URL_BASE + 'currency',
                     data=json.dumps(c),
                     content_type='application/json')
     return 0

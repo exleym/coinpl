@@ -12,7 +12,11 @@ class Quandl(object):
     def __init__(self, quandl_key):
         quandl.ApiConfig.api_key = quandl_key
 
-    def get_historical_data(self, database_code, dataset_code):
-        print('{}/{}'.format(database_code, dataset_code))
-        data = quandl.get('{}/{}'.format(database_code, dataset_code))
+    def get_historical_data(self, database_code, dataset_code, date_range=None):
+        if not date_range:
+            data = quandl.get('{}/{}'.format(database_code, dataset_code))
+        else:
+            data = quandl.get('{}/{}'.format(database_code, dataset_code),
+                              start_date=date_range[0].strftime('%Y-%m-%d'),
+                              end_date=date_range[1].strftime('%Y-%m-%d'))
         return data

@@ -14,6 +14,12 @@ exchange_sources = Table('exchange_sources', Base.metadata,
 )
 
 
+exchange_products = Table('exchange_products', Base.metadata,
+    Column('exchange_id', Integer, ForeignKey('exchanges.id')),
+    Column('product_id', Integer, ForeignKey('products.id'))
+)
+
+
 class Currency(Base):
     __tablename__ = 'currencies'
     id = Column(Integer, primary_key=True)
@@ -22,6 +28,11 @@ class Currency(Base):
     min_size = Column(Float)
     ipo_date = Column(Date)
     currency_limit = Column(Integer)
+
+    products = relationship('Product', backref='base_currency',
+                            foreign_keys='Product.base_currency_id')
+    can_buy = relationship('Product', backref='quote_currency',
+                           foreign_keys='Product.quote_currency_id')
 
     @property
     def shallow_json(self):
@@ -35,8 +46,46 @@ class Currency(Base):
         }
         return data
 
+    @property
+    def json(self):
+        data = self.shallow_json
+        data.update({
+            "products": [p.shallow_json for p in self.products],
+            "can_buy": [p.shallow_json for p in self.can_buy]
+        })
+        return data
+
     def __repr__(self):
         return "<Currency: {}>".format(self.symbol)
+
+
+class CurrencyState(Base):
+    __tablename__ = 'currency_states'
+    id = Column(Integer, primary_key=True)
+    name = Column(String(64))
+
+    def __repr__(self):
+        return "<CurrencyState: {}>".format(self.name)
+
+
+class CurrencyStateHistory(Base):
+    __tablename__ = 'currency_state_history'
+    id = Column(Integer, primary_key=True)
+    currency_id = Column(Integer, ForeignKey('currencies.id'))
+    currency_state_id = Column(Integer, ForeignKey('currency_states.id'))
+    start_time = Column(DateTime, nullable=False)
+    end_time = Column(DateTime, nullable=True)
+
+    currency = relationship('Currency', backref='state_history')
+    state = relationship('CurrencyState')
+
+    def __repr__(self):
+        return "<CurrencyStateHistory: {} = {} ({} - {})>".format(
+            self.currency.symbol,
+            self.state.name,
+            self.start_time.strftime('%Y-%m-%d %H:%M:%S'),
+            self.end_time.strftime('%Y-%m-%d %H:%M:%S')
+        )
 
 
 class Cut(Base):
@@ -71,6 +120,8 @@ class DataSource(Base):
     name = Column(String(64))
     url = Column(String(256))
 
+    exchanges = relationship('Exchange', secondary=exchange_sources, backref='sources')
+
     def __repr__(self):
         return "<DataSource: {}>".format(self.name)
 
@@ -84,12 +135,10 @@ class DataSource(Base):
 class Exchange(Base):
     __tablename__ = 'exchanges'
     id = Column(Integer, primary_key=True)
-    name = Column(String(128), unique=True)
     symbol = Column(String(8), unique=True)
+    name = Column(String(128), unique=True)
     url = Column(String(256))
     active = Column(Boolean)
-
-    sources = relationship('DataSource', secondary=exchange_sources)
 
     @property
     def shallow_json(self):
@@ -98,6 +147,14 @@ class Exchange(Base):
                 "symbol": self.symbol,
                 "url": self.url,
                 "active": self.active}
+
+    @property
+    def json(self):
+        data = self.shallow_json
+        data.update({
+            "sources": [s.shallow_json for s in self.sources]
+        })
+        return data
 
     def __repr__(self):
         return "<Exchange: {}>".format(self.name)
@@ -192,6 +249,8 @@ class Product(Base):
     quote_increment = Column(Float)
     display_name = Column(String(7))
     margin_enabled = Column(Boolean)
+
+    exchanges = relationship('Exchange', secondary=exchange_products, backref='products')
 
     @property
     def shallow_json(self):

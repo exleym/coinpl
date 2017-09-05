@@ -17,7 +17,8 @@ manager.add_command("runserver", Server(
     use_debugger=True,
     use_reloader=True,
     host='0.0.0.0',
-    port=8000
+    port=8000,
+    debug=True
 ))
 
 
@@ -33,8 +34,8 @@ def dbpopulate():
     mgr = GDAXDataManager(eng)
     qmgr = QuandlDataManager(eng, app)
     local_mgr = LocalDataManager(eng, app)
-    local_mgr.fill_base_data()
     mgr.populate_fixed_resources()
+    local_mgr.fill_base_data()
     qmgr.backfill_historical_data('BTC', 'USD')
     #mgr.backfill_historical_data(product='ETH-USD', months=1, granularity=60)
 

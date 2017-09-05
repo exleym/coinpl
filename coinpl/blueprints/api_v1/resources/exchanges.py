@@ -44,7 +44,7 @@ def read_exchange_by_id(exchange_id):
     exch = session.query(Exchange).filter(Exchange.id == exchange_id).first()
     if not exch:
         return error_out(MissingResourceError('Exchange'))
-    return jsonify(exch.shallow_json), 200
+    return jsonify(exch.json), 200
 
 
 @api_v1.route('/exchanges/', methods=['GET'])

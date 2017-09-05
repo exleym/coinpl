@@ -29,6 +29,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: rootpass
       MYSQL_DATABASE: coinpl
+      MYSQL_USER: coinpl_adm
+      MYSQL_PASSWORD: coinpl_adm
   mongo:
     image: mongo:3.0.15
     restart: always

@@ -11,5 +11,13 @@
   <h1>{{ exchange.name }}</h1>
   <h4><a href="{{ url_for('main.exchanges') }}">Back to Exchanges</a></h4>
   <h4>This is a Future Resource Page for {{ exchange.name }}</h4>
+  {% if exchange.currencies %}
+  <ul>
+
+  </ul>
+  {% else %}
+  <h4>This exchange does not have any supported currencies yet</h4>
+  <h4>Would you like to <a href="{{ url_for('main.exchange_settings', exchange_id=exchange.id) }}">Add One</a>?</h4>
+  {% endif %}
 </div>
 {% endblock %}

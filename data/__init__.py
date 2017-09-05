@@ -1,6 +1,6 @@
 import json
 from sqlalchemy.orm import sessionmaker
-from coinpl.models import DataSource, Exchange
+from coinpl.models import DataSource, Exchange, Product
 
 
 class LocalDataManager(object):
@@ -13,6 +13,7 @@ class LocalDataManager(object):
         self.populate_exchanges()
         self.populate_data_sources()
         self.associate_exchanges_with_sources()
+        self.associate_exchanges_with_products()
 
     def associate_exchanges_with_sources(self):
         session = self.Session()
@@ -26,6 +27,17 @@ class LocalDataManager(object):
             if exch["quandl_data"]:
                 exchange.sources.append(qndl)
                 session.add(exchange)
+        session.commit()
+
+    def associate_exchanges_with_products(self):
+        session = self.Session()
+        with open('./data/exchange_products.json') as f_exch_prod:
+            exch_prods = json.load(f_exch_prod)
+        for e_p in exch_prods:
+            exch = session.query(Exchange).filter(Exchange.name == e_p["exchange"]).one()
+            prod = session.query(Product).filter(Product.symbol == e_p["product"]).one()
+            exch.products.append(prod)
+            session.add(exch)
         session.commit()
 
     def populate_exchanges(self):
