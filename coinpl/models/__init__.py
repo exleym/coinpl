@@ -3,6 +3,8 @@ from sqlalchemy.ext.declarative import declarative_base
 Base = declarative_base()
 
 from coinpl.models.models import (
+    Alert,
+    AlertType,
     Currency,
     Cut,
     DataSource,

@@ -1,6 +1,6 @@
 About Us
 ========
-CoinPL was developed as a hobby project, and was initially created by
+CoinPL is a hobby project, and was initially created by
 Exley McCormick while working at AQR Capital Management as a researcher and
 technologist. The project's original goals were to learn more about systematic
 trading of cryptocurrencies and the Docker-container approach to building
@@ -8,6 +8,7 @@ production-grade software.
 
 The Developers
 --------------
+This section will be expanded if it becomes a collaborative project.
 
 Exley McCormick
 ^^^^^^^^^^^^^^^

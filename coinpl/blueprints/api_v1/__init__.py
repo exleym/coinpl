@@ -36,6 +36,11 @@ def verify_allowed_fields(json, allowed_fields):
 def error_out(error):
     return error.json_response(True)
 
+from . resources.alerts import (create_alert,
+                                read_alert_by_id,
+                                read_alerts,
+                                update_alert,
+                                delete_alert)
 
 from . resources.currencies import (create_currency,
                                     read_currency_by_id,

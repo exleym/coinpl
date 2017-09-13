@@ -20,6 +20,57 @@ exchange_products = Table('exchange_products', Base.metadata,
 )
 
 
+class Alert(Base):
+    __tablename__ = 'alerts'
+    id = Column(Integer, primary_key=True)
+    timestamp = Column(DateTime, default=datetime.now)
+    alert_type_id = Column(Integer, ForeignKey('alert_types.id'))
+    approved = Column(Boolean, default=False)
+    approving_user_id = Column(Integer, ForeignKey('users.id'))
+    approval_timestamp = Column(DateTime)
+
+    type = relationship('AlertType')
+
+    @property
+    def shallow_json(self):
+        data = {
+            "id": self.id,
+            "timestamp": self.timestamp.strftime('%Y-%m-%d %H:%M:%S'),
+            "alert_type_id": self.alert_type_id,
+            "approved": self.approved,
+            "approving_user_id": self.approving_user_id,
+            "approval_timestamp": self.approval_timestamp
+        }
+        return data
+
+    @property
+    def json(self):
+        data = self.shallow_json
+        data.update({
+            "type": self.type.shallow_json
+        })
+        return data
+
+    def __repr__(self):
+        return "<Alert: {} (type={})>".format(self.id,
+                                              self.alert_type.name)
+
+
+class AlertType(Base):
+    __tablename__ = 'alert_types'
+    id = Column(Integer, primary_key=True)
+    name = Column(String(64))
+    short_name = Column(String(16))
+
+    @property
+    def shallow_json(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "short_name": self.short_name
+        }
+
+
 class Currency(Base):
     __tablename__ = 'currencies'
     id = Column(Integer, primary_key=True)
