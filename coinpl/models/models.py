@@ -400,6 +400,7 @@ class Wallet(Base):
     currency_id = Column(Integer, ForeignKey('currencies.id'), nullable=False)
     name = Column(String(128), unique=True)
     inception_date = Column(Date)
+    address = Column(String(34))
 
     owner = relationship('User', backref='wallets')
     currency = relationship('Currency', backref='wallets')

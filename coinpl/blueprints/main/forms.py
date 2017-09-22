@@ -22,6 +22,7 @@ class WalletForm(FlaskForm):
     currency = SelectField('Currency', choices=[], coerce=int)
     exchange = SelectField('Exchange', choices=[], coerce=int)
     inception_date = DateField('Inception Date', validators=[DataRequired()])
+    address = StringField('Address', validators=[DataRequired()])
     submit = SubmitField('Add Wallet')
 
 
