@@ -18,7 +18,7 @@ def create_exchange():
     """
     if not request.json:
         return error_out(MissingJSONError())
-    expected_fields = ['name']
+    expected_fields = ['name', 'symbol', 'url', 'active']
     data = request.json
 
     # Ensure that required fields have been included in JSON data
@@ -26,7 +26,9 @@ def create_exchange():
         return error_out(PostValidationError())
     session = get_session(current_app)
     exchange = Exchange(name=data["name"],
-                        url=data["url"])
+                        symbol=data["symbol"],
+                        url=data["url"],
+                        active=data["active"])
     session.add(exchange)
     try:
         session.commit()
@@ -42,7 +44,7 @@ def read_exchange_by_id(exchange_id):
     exch = session.query(Exchange).filter(Exchange.id == exchange_id).first()
     if not exch:
         return error_out(MissingResourceError('Exchange'))
-    return jsonify(exch.shallow_json), 200
+    return jsonify(exch.json), 200
 
 
 @api_v1.route('/exchanges/', methods=['GET'])

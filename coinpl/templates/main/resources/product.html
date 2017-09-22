@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}{{ product.symbol }}{% endblock %}
+
+{% block css %}
+  {{ super() }}
+{% endblock %}
+
+{% block scripts %}
+  {{ super() }}
+  <script src="{{ url_for('static', filename='scripts/highstock.js') }}"></script>
+  <script src="{{ url_for('static', filename='scripts/exporting.js') }}"></script>
+  <script src="{{ url_for('static', filename='scripts/charts.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="page-std">
+  <h1>{{ base.name }} - {{ quote.name }}</h1>
+  <h4><a href="{{ url_for('main.currency', currency_id=base.id ) }}">Back to Base Currency</a></h4>
+  <div class="col-md-12">
+    {% if product.exchanges %}
+    <ul>
+      {% for exch in product.exchanges %}
+      <li>{{ exch.name }} - {{ exch.symbol }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

@@ -1,12 +1,74 @@
 from datetime import datetime
 from sqlalchemy import (Column, BigInteger, Boolean, Date, DateTime, Float,
-                        ForeignKey, Integer, String, Text)
-from sqlalchemy.ext.declarative import declarative_base
+                        ForeignKey, Integer, String, Table, Text)
 from sqlalchemy.orm import relationship
 from flask_login import UserMixin
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from coinpl.models import Base
+
+
+exchange_sources = Table('exchange_sources', Base.metadata,
+    Column('exchange_id', Integer, ForeignKey('exchanges.id')),
+    Column('source_id', Integer, ForeignKey('data_sources.id'))
+)
+
+
+exchange_products = Table('exchange_products', Base.metadata,
+    Column('exchange_id', Integer, ForeignKey('exchanges.id')),
+    Column('product_id', Integer, ForeignKey('products.id'))
+)
+
+
+class Alert(Base):
+    __tablename__ = 'alerts'
+    id = Column(Integer, primary_key=True)
+    timestamp = Column(DateTime, default=datetime.now)
+    alert_type_id = Column(Integer, ForeignKey('alert_types.id'))
+    approved = Column(Boolean, default=False)
+    approving_user_id = Column(Integer, ForeignKey('users.id'))
+    approval_timestamp = Column(DateTime)
+
+    type = relationship('AlertType')
+
+    @property
+    def shallow_json(self):
+        data = {
+            "id": self.id,
+            "timestamp": self.timestamp.strftime('%Y-%m-%d %H:%M:%S'),
+            "alert_type_id": self.alert_type_id,
+            "approved": self.approved,
+            "approving_user_id": self.approving_user_id,
+            "approval_timestamp": self.approval_timestamp
+        }
+        return data
+
+    @property
+    def json(self):
+        data = self.shallow_json
+        data.update({
+            "type": self.type.shallow_json
+        })
+        return data
+
+    def __repr__(self):
+        return "<Alert: {} (type={})>".format(self.id,
+                                              self.alert_type.name)
+
+
+class AlertType(Base):
+    __tablename__ = 'alert_types'
+    id = Column(Integer, primary_key=True)
+    name = Column(String(64))
+    short_name = Column(String(16))
+
+    @property
+    def shallow_json(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "short_name": self.short_name
+        }
 
 
 class Currency(Base):
@@ -17,6 +79,11 @@ class Currency(Base):
     min_size = Column(Float)
     ipo_date = Column(Date)
     currency_limit = Column(Integer)
+
+    products = relationship('Product', backref='base_currency',
+                            foreign_keys='Product.base_currency_id')
+    can_buy = relationship('Product', backref='quote_currency',
+                           foreign_keys='Product.quote_currency_id')
 
     @property
     def shallow_json(self):
@@ -30,8 +97,46 @@ class Currency(Base):
         }
         return data
 
+    @property
+    def json(self):
+        data = self.shallow_json
+        data.update({
+            "products": [p.shallow_json for p in self.products],
+            "can_buy": [p.shallow_json for p in self.can_buy]
+        })
+        return data
+
     def __repr__(self):
         return "<Currency: {}>".format(self.symbol)
+
+
+class CurrencyState(Base):
+    __tablename__ = 'currency_states'
+    id = Column(Integer, primary_key=True)
+    name = Column(String(64))
+
+    def __repr__(self):
+        return "<CurrencyState: {}>".format(self.name)
+
+
+class CurrencyStateHistory(Base):
+    __tablename__ = 'currency_state_history'
+    id = Column(Integer, primary_key=True)
+    currency_id = Column(Integer, ForeignKey('currencies.id'))
+    currency_state_id = Column(Integer, ForeignKey('currency_states.id'))
+    start_time = Column(DateTime, nullable=False)
+    end_time = Column(DateTime, nullable=True)
+
+    currency = relationship('Currency', backref='state_history')
+    state = relationship('CurrencyState')
+
+    def __repr__(self):
+        return "<CurrencyStateHistory: {} = {} ({} - {})>".format(
+            self.currency.symbol,
+            self.state.name,
+            self.start_time.strftime('%Y-%m-%d %H:%M:%S'),
+            self.end_time.strftime('%Y-%m-%d %H:%M:%S')
+        )
 
 
 class Cut(Base):
@@ -60,15 +165,47 @@ class Cut(Base):
                                          self.cut_time.strftime('%Y-%m-%d'))
 
 
-class Exchange(Base):
-    __tablename__ = 'exchanges'
+class DataSource(Base):
+    __tablename__ = 'data_sources'
     id = Column(Integer, primary_key=True)
-    name = Column(String(128), unique=True)
+    name = Column(String(64))
     url = Column(String(256))
+
+    exchanges = relationship('Exchange', secondary=exchange_sources, backref='sources')
+
+    def __repr__(self):
+        return "<DataSource: {}>".format(self.name)
 
     @property
     def shallow_json(self):
-        return {"id": self.id, "name": self.name, "url": self.url}
+        return {
+            k: v for k, v in self.__dict__.items() if k != "_sa_instance_state"
+        }
+
+
+class Exchange(Base):
+    __tablename__ = 'exchanges'
+    id = Column(Integer, primary_key=True)
+    symbol = Column(String(8), unique=True)
+    name = Column(String(128), unique=True)
+    url = Column(String(256))
+    active = Column(Boolean)
+
+    @property
+    def shallow_json(self):
+        return {"id": self.id,
+                "name": self.name,
+                "symbol": self.symbol,
+                "url": self.url,
+                "active": self.active}
+
+    @property
+    def json(self):
+        data = self.shallow_json
+        data.update({
+            "sources": [s.shallow_json for s in self.sources]
+        })
+        return data
 
     def __repr__(self):
         return "<Exchange: {}>".format(self.name)
@@ -163,6 +300,8 @@ class Product(Base):
     quote_increment = Column(Float)
     display_name = Column(String(7))
     margin_enabled = Column(Boolean)
+
+    exchanges = relationship('Exchange', secondary=exchange_products, backref='products')
 
     @property
     def shallow_json(self):
@@ -261,6 +400,7 @@ class Wallet(Base):
     currency_id = Column(Integer, ForeignKey('currencies.id'), nullable=False)
     name = Column(String(128), unique=True)
     inception_date = Column(Date)
+    address = Column(String(34))
 
     owner = relationship('User', backref='wallets')
     currency = relationship('Currency', backref='wallets')

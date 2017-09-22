@@ -6,6 +6,8 @@ from flask_script import Manager, Server, prompt_bool
 from coinpl import create_app, connect
 from coinpl.models import Base
 from coinpl.external.gdax import GDAXDataManager
+from coinpl.external.qndl import QuandlDataManager
+from data import LocalDataManager
 
 app = create_app()
 manager = Manager(app)
@@ -15,7 +17,8 @@ manager.add_command("runserver", Server(
     use_debugger=True,
     use_reloader=True,
     host='0.0.0.0',
-    port=8000
+    port=8000,
+    debug=True
 ))
 
 
@@ -29,7 +32,11 @@ def dbinit():
 def dbpopulate():
     eng = connect(app)
     mgr = GDAXDataManager(eng)
+    qmgr = QuandlDataManager(eng, app)
+    local_mgr = LocalDataManager(eng, app)
     mgr.populate_fixed_resources()
+    local_mgr.fill_base_data()
+    qmgr.backfill_historical_data('BTC', 'USD')
     #mgr.backfill_historical_data(product='ETH-USD', months=1, granularity=60)
 
 

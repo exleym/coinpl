@@ -12,7 +12,7 @@ class DataManager(object):
         session = get_session(self.app)
         prod = session.query(Product).filter(Product.symbol == product).first()
         if not prod:
-            raise KeyError("You passed a product we don't have yet!")
+            return None
         gdax = GDAX()
         resp = gdax.get_market(prod.symbol)
         mkt = Market(

@@ -40,3 +40,20 @@ def add_exchange():
         return redirect(url_for('main.index'))
     return render_template('main/quick_form.html', header='Add an Exchange',
                            form=exchange_form)
+
+
+@main.route('/exchange/<int:exchange_id>/settings', methods=['GET', 'POST'])
+@login_required
+def exchange_settings(exchange_id):
+    exchange_form = ExchangeForm()
+    session = get_session(current_app)
+    if exchange_form.validate_on_submit():
+        exch = Exchange(
+            name=exchange_form.name.data,
+            url=exchange_form.url.data
+        )
+        session.add(exch)
+        session.commit()
+        return redirect(url_for('main.index'))
+    return render_template('main/quick_form.html', header='Add an Exchange',
+                           form=exchange_form)

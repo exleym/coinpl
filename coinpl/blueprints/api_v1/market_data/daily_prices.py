@@ -34,7 +34,35 @@ def read_daily_prices(product_id, exchange_id, source_id):
                         .filter(DailyPrice.date <= end_date) \
                         .order_by(DailyPrice.date) \
                         .all()
+
     if not dly_prices:
         return error_out(MissingResourceError('DailyPrice'))
     return jsonify([px.shallow_json for px in dly_prices]), 200
 
+
+@api_v1.route('/datasets/highstock-prices/product/<int:product_id>/exchange/<int:exchange_id>/source/<int:source_id>', methods=['GET'])
+def read_hs_prices(product_id, exchange_id, source_id):
+    end_date = date.today()
+    if request.args.get('endDate'):
+        end_date = datetime.strptime(request.args.get('startDate'),
+                                     '%Y-%m-%d').date()
+
+    start_date = end_date - relativedelta(days=365)
+    if request.args.get('startDate'):
+        start_date = datetime.strptime(request.args.get('startDate'),
+                                       '%Y-%m-%d').date()
+
+    session = get_session(current_app)
+
+    dly_prices = session.query(DailyPrice) \
+        .filter(DailyPrice.product_id == product_id) \
+        .filter(DailyPrice.exchange_id == exchange_id) \
+        .filter(DailyPrice.source_id == source_id) \
+        .filter(DailyPrice.date >= start_date) \
+        .filter(DailyPrice.date <= end_date) \
+        .order_by(DailyPrice.date) \
+        .all()
+
+    if not dly_prices:
+        return error_out(MissingResourceError('DailyPrice'))
+    return jsonify([px.highchart_json for px in dly_prices]), 200

@@ -11,45 +11,41 @@
   <h4>Active since: {{ wallet.inception_date.strftime('%Y-%m-%d') }}</h4>
   <h4><a href="{{ url_for('main.user_page', user_name=current_user.alias) }}">Back to User Page</a></h4>
 
-  <div id="exTab1" class="container container-fluid">
-    <ul  class="nav nav-pills">
-      <li class="active"><a  href="#overview" data-toggle="tab">Overview</a></li>
-      <li><a href="#2a" data-toggle="tab">Trades</a></li>
-    </ul>
-
-    <div class="tab-content clearfix">
-      <div class="tab-pane active" id="overview">
-        <div class="table-spacer">
+  <div id="wallet-data">
+    <div class="col col-md-3">
+      <img src="{{ url_for('static', filename='img/qrcodes/wallet_qr_{}.png'.format(wallet.id)) }}">
+    </div>
+    <div class="col col-md-5">
+      <div class="table-spacer">
           <table class="table table-bordered">
             <thead><th></th><th></th></thead>
             <tbody>
-              <tr><td>Account Value</td><td>9000</td></tr>
+              <tr><td>Address</td><td>{{ wallet.address }}</td></tr>
+              <tr><td>Wallet Value</td><td>9000</td></tr>
               <tr><td>ETH Holdings</td><td>{{ holdings }}</td></tr>
             </tbody>
           </table>
-        </div>
       </div>
-      <div class="tab-pane" id="2a">
-        <div class="table-spacer">
-          <table class="table table-bordered">
-            <thead><th>Trade Time</th><th>Currency</th><th>Quantity</th><th>Price</th><th>Total Value</th><th>Commission</th></thead>
-            <tbody>
-              {% for trade in wallet.trades %}
-                <tr>
-                  <td>{{ trade.trade_time.strftime('%Y-%m-%d %H:%M:%S') }}</td>
-                  <td>{{ trade.coin.name }}</td>
-                  <td>{{ "{:,.4f}".format(trade.quantity) }}</td>
-                  <td>{{ "{:,.2f}".format(trade.execution_price) }}</td>
-                  <td>{{ "{:,.2f}".format(trade.quantity * trade.execution_price) }}</td>
-                  <td>{{ "{:,.2f}".format(trade.commission) }}</td>
-                </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-          <h4><a href="{{ url_for('main.manual_trade', wallet_id=wallet.id) }}">Manually Add a Trade</a></h4>
-        </div>
+      <div class="table-spacer">
+        <table class="table table-bordered">
+          <thead><th>Trade Time</th><th>Currency</th><th>Quantity</th><th>Price</th><th>Total Value</th><th>Commission</th></thead>
+          <tbody>
+            {% for trade in wallet.trades %}
+              <tr>
+                <td>{{ trade.trade_time.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                <td>{{ trade.coin.name }}</td>
+                <td>{{ "{:,.4f}".format(trade.quantity) }}</td>
+                <td>{{ "{:,.2f}".format(trade.execution_price) }}</td>
+                <td>{{ "{:,.2f}".format(trade.quantity * trade.execution_price) }}</td>
+                <td>{{ "{:,.2f}".format(trade.commission) }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <h4><a href="{{ url_for('main.manual_trade', wallet_id=wallet.id) }}">Manually Add a Trade</a></h4>
       </div>
     </div>
+    <div class="col col-md-4"></div>
   </div>
 </div>
 {% endblock %}

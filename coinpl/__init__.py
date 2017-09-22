@@ -1,6 +1,7 @@
 from flask import Flask, g
 from flask_bootstrap import Bootstrap
 from flask_login import LoginManager
+from flask_cors import CORS
 import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -17,6 +18,9 @@ def create_app(env='prd', **config_overrides):
     login_manager = LoginManager()
     bootstrap = Bootstrap()
     bootstrap.init_app(app)
+
+    CORS(app, headers=['Content-Type'])
+
     login_manager.init_app(app)
     login_manager.login_view = '/auth/login'
 

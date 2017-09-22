@@ -1,0 +1,10 @@
+[
+  {
+    "name": "GDAX",
+    "url": "https://api.gdax.com/"
+  },
+  {
+    "name": "Quandl",
+    "url": "https://www.quandl.com/api/v3"
+  }
+]

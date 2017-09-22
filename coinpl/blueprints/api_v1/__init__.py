@@ -36,6 +36,11 @@ def verify_allowed_fields(json, allowed_fields):
 def error_out(error):
     return error.json_response(True)
 
+from . resources.alerts import (create_alert,
+                                read_alert_by_id,
+                                read_alerts,
+                                update_alert,
+                                delete_alert)
 
 from . resources.currencies import (create_currency,
                                     read_currency_by_id,
@@ -96,3 +101,6 @@ from . resources.wallet_data import (create_wallet_data,
                                      read_wallet_data,
                                      update_wallet_data,
                                      delete_wallet_data)
+
+from . market_data.daily_prices import (read_daily_prices,
+                                        read_hs_prices)
