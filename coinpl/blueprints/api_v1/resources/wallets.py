@@ -1,5 +1,6 @@
 from datetime import datetime
 from flask import current_app, jsonify, request
+import os
 from coinpl import get_session
 from coinpl.models import Wallet
 from coinpl.util.errors import (DatabaseIntegrityError,
@@ -44,19 +45,19 @@ def create_wallet():
 @api_v1.route('/wallet/<int:wallet_id>', methods=['GET'])
 def read_wallet_by_id(wallet_id):
     session = get_session(current_app)
-    exch = session.query(Wallet).filter(Wallet.id == wallet_id).first()
-    if not exch:
+    wallet = session.query(Wallet).filter(Wallet.id == wallet_id).first()
+    if not wallet:
         return error_out(MissingResourceError('Wallet'))
-    return jsonify(exch.shallow_json), 200
+    return jsonify(wallet.shallow_json), 200
 
 
 @api_v1.route('/wallets/', methods=['GET'])
 def read_wallets():
     session = get_session(current_app)
-    txns = session.query(Wallet).all()
-    if not txns:
+    wallets = session.query(Wallet).all()
+    if not wallets:
         return error_out(MissingResourceError('Wallet'))
-    return jsonify([wallet.shallow_json for wallet in txns]), 200
+    return jsonify([wallet.shallow_json for wallet in wallets]), 200
 
 
 @api_v1.route('/wallet/<int:wallet_id>', methods=['PUT'])
@@ -85,8 +86,15 @@ def delete_wallet(wallet_id):
     """
     session = get_session(current_app)
     wallet = session.query(Wallet).filter(Wallet.id == wallet_id).first()
+    qr_base = '/coinpl/coinpl/static/img/qrcodes/wallet_qr_{}.png'
+    filename_qr = qr_base.format(wallet.id)
     if not wallet:
         return error_out(MissingResourceError('Wallet'))
-    session.delete(wallet)
+    wallet.deactivated = True
+    session.add(wallet)
     session.commit()
+
+    if os.path.exists(filename_qr):
+        os.remove(filename_qr)
+
     return jsonify(200)

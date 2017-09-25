@@ -6,6 +6,9 @@ __pycache__/
 # App Config
 settings.py
 
+# QR Code Static Files
+coinpl/static/img/qrcodes/
+
 # C extensions
 *.so
 

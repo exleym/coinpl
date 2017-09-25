@@ -401,8 +401,11 @@ class Wallet(Base):
     name = Column(String(128), unique=True)
     inception_date = Column(Date)
     address = Column(String(34))
+    deactivated = Column(Boolean, default=False)
 
-    owner = relationship('User', backref='wallets')
+    owner = relationship('User', backref='wallets',
+                         primaryjoin="and_(User.id==Wallet.owner_id, "
+                         "Wallet.deactivated==False)")
     currency = relationship('Currency', backref='wallets')
     exchange = relationship('Exchange', backref='wallets')
 
@@ -416,7 +419,8 @@ class Wallet(Base):
                 "exchange_id": self.exchange_id,
                 "currency_id": self.currency_id,
                 "name": self.name,
-                "inception_date": self.inception_date.strftime('%Y-%m-%d')
+                "inception_date": self.inception_date.strftime('%Y-%m-%d'),
+                "deactivated": self.deactivated
                 }
 
 
