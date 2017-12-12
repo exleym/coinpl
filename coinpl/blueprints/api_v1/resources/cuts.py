@@ -13,7 +13,7 @@ from coinpl.blueprints.api_v1 import api_v1, error_out, verify_required_fields
 # API Routes for accessing and managing cut information
 # With these API endpoints, users can retrieve cut information by id,
 # retrieve a list of cuts, add new cuts, update existing cuts.
-@api_v1.route('/cuts', methods=['POST'])
+@api_v1.route('/cut', methods=['POST'])
 def create_cut():
     """ POST to /api/v1.0/cuts will create a new Cut object
     """
@@ -47,32 +47,13 @@ def read_cut_by_id(cut_id):
     return jsonify(cut.shallow_json), 200
 
 
-@api_v1.route('/cuts/', methods=['GET'])
+@api_v1.route('/cut/', methods=['GET'])
 def read_cuts():
     session = get_session(current_app)
     cuts = session.query(Cut).all()
     if not cuts:
         return error_out(MissingResourceError('Cut'))
     return jsonify([cut.shallow_json for cut in cuts]), 200
-
-
-@api_v1.route('/cut/<int:cut_id>', methods=['PUT'])
-def update_cut(cut_id):
-    """ PUT request to /api/cut/<cut_id> will update Cut object
-        <id> with fields passed
-    """
-    session = get_session(current_app)
-    put_data = request.json
-    if not put_data:
-        return error_out(MissingJSONError())
-    cut = session.query(Cut).filter(Cut.id == cut_id).first()
-    if not cut:
-        return error_out(MissingResourceError('Cut'))
-    for k, v in put_data.items():
-        setattr(cut, k, v)
-    session.add(cut)
-    session.commit()
-    return jsonify(cut.shallow_json)
 
 
 @api_v1.route('/cut/<int:cut_id>', methods=['DELETE'])

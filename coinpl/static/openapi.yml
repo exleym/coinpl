@@ -1,0 +1,549 @@
+openapi: 3.0.0
+info:
+  title: CoinPL API
+  description: This is the API doc for the CoinPL Application
+  version: "1.0.0-oas3"
+  termsOfService: 'https://konghq.com/terms/'
+  contact:
+    email: exleym@gmail.com
+  license:
+    name: Limited license
+    url: 'https://github.com/exleym/coinpl'
+servers:
+  - url: 'http://localhost/api/v1.0'
+    description: User Docker Server
+paths:
+  /alert:
+    post:
+      tags:
+        - alert
+      summary: add alert
+      description: Create a new Alert
+      operationId: createAlert
+      externalDocs:
+        description: More details
+        url: 'https://github.com/exleym/coinpl/blob/master/README.md'
+      responses:
+        '400':
+          description: Malformed request
+        '401':
+          description: Login required
+        '403':
+          description: unauthorized
+        '405':
+          description: Invalid input
+      requestBody:
+        $ref: '#/components/requestBodies/Alert'
+    put:
+      tags:
+        - alert
+      summary: update alert
+      description: This method allows an alert to be updated with data
+      operationId: updateAlert
+      parameters:
+        - name: alert_id
+          in: path
+          description: name that need to be updated
+          required: true
+          schema:
+            type: string
+      responses:
+        '400':
+          description: Invalid user supplied
+        '404':
+          description: Alert not found
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Alert'
+        description: Updated alert object
+        required: true
+    get:
+      tags:
+        - alert
+      summary: get alerts
+      description: Get Alerts
+      operationId: getAlerts
+      externalDocs:
+        description: More details
+        url: 'https://github.com/exleym/coinpl/blob/master/README.md'
+      responses:
+        '200':
+          description: Alert Response
+          content:
+            application/json:
+              schema:
+                description: Successful operation
+                $ref: '#/components/schemas/Alert'
+  '/alert/{alert_id}':
+    get:
+      tags:
+        - alert
+      summary: get alert
+      description: Get an Alert by Id
+      operationId: getAlert
+      externalDocs:
+        description: More details
+        url: 'https://github.com/exleym/coinpl/blob/master/README.md'
+      parameters:
+        - name: alert_id
+          in: path
+          description: id associated with the target alert
+          required: true
+          explode: false
+          schema:
+            type: integer
+          example: 42
+      responses:
+        '200':
+          description: Alert Response
+          content:
+            application/json:
+              schema:
+                description: Successful operation
+                $ref: '#/components/schemas/Alert'
+    delete:
+      tags:
+        - alert
+      summary: delete alert
+      description: Delete an Alert from the system. Will actually soft-delete.
+      operationId: deleteAlert
+      parameters:
+        - name: alert_id
+          in: path
+          description: The id of the alert that needs to be deleted
+          required: true
+          schema:
+            type: string
+      responses:
+        '400':
+          description: Invalid alert supplied
+        '404':
+          description: Alert not found
+  /alert_type:
+    post:
+      tags:
+        - alert_type
+      summary: add alert type
+      description: Create a new AlertType
+      operationId: createAlertType
+      externalDocs:
+        description: More details
+        url: 'https://github.com/exleym/coinpl/blob/master/README.md'
+      responses:
+        '400':
+          description: Malformed request
+        '401':
+          description: Login required
+        '403':
+          description: unauthorized
+        '405':
+          description: Invalid input
+      requestBody:
+        $ref: '#/components/requestBodies/AlertType'
+    put:
+      tags:
+        - alert_type
+      summary: update alert type
+      description: This method allows an AlertType to be updated with data
+      operationId: updateAlertType
+      parameters:
+        - name: alert_type_id
+          in: query
+          description: alert type that needs to be updated
+          required: true
+          schema:
+            type: string
+      responses:
+        '400':
+          description: Invalid user supplied
+        '404':
+          description: Alert not found
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlertType'
+        description: Updated alert type object
+        required: true
+    get:
+      tags:
+        - alert_type
+      summary: get alert types
+      description: Get AlertTypes
+      operationId: getAlertTypes
+      externalDocs:
+        description: More details
+        url: 'https://github.com/exleym/coinpl/blob/master/README.md'
+      responses:
+        '200':
+          description: AlertType Response
+          content:
+            application/json:
+              schema:
+                description: Successful operation
+                $ref: '#/components/schemas/AlertType'
+  '/alert_type/{alert_type_id}':
+    get:
+      tags:
+        - alert_type
+      summary: get alert type
+      description: Get an AlertType by Id
+      operationId: getAlertType
+      externalDocs:
+        description: More details
+        url: 'https://github.com/exleym/coinpl/blob/master/README.md'
+      parameters:
+        - name: alert_type_id
+          in: path
+          description: id associated with the target AlertType
+          required: true
+          explode: false
+          schema:
+            type: integer
+          example: 42
+      responses:
+        '200':
+          description: AlertType Response
+          content:
+            application/json:
+              schema:
+                description: Successful operation
+                $ref: '#/components/schemas/AlertType'
+    delete:
+      tags:
+        - alert_type
+      summary: delete alert type
+      description: Delete an AlertType from the system. Will soft-delete.
+      operationId: deleteAlertType
+      parameters:
+        - name: alert_type_id
+          in: path
+          description: The id of the AlertType that needs to be deleted
+          required: true
+          schema:
+            type: string
+      responses:
+        '400':
+          description: Invalid alert supplied
+        '404':
+          description: AlertType not found
+  /currency:
+    post:
+      tags:
+        - currency
+      summary: add a currency
+      description: Create a new Currency
+      operationId: createCurrency
+      externalDocs:
+        description: More details
+        url: 'https://github.com/exleym/coinpl/blob/master/README.md'
+      responses:
+        '400':
+          description: Malformed request
+        '401':
+          description: Login required
+        '403':
+          description: unauthorized
+        '405':
+          description: Invalid input
+      requestBody:
+        $ref: '#/components/requestBodies/Currency'
+    put:
+      tags:
+        - currency
+      summary: update currency
+      description: This method allows a Currency to be updated with data
+      operationId: updateCurrency
+      parameters:
+        - name: currency_id
+          in: query
+          description: currency that needs to be updated
+          required: true
+          schema:
+            type: string
+      responses:
+        '400':
+          description: Invalid currency supplied
+        '404':
+          description: Currency not found
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Currency'
+        description: Updated currency object
+        required: true
+    get:
+      tags:
+        - currency
+      summary: get currency
+      description: Get Currency
+      operationId: getCurrency
+      externalDocs:
+        description: More details
+        url: 'https://github.com/exleym/coinpl/blob/master/README.md'
+      responses:
+        '200':
+          description: Currency Response
+          content:
+            application/json:
+              schema:
+                description: Successful operation
+                $ref: '#/components/schemas/Currency'
+  '/currency/{currency_id}':
+    get:
+      tags:
+        - currency
+      summary: get currency
+      description: Get an Currency by Id
+      operationId: getCurrency
+      externalDocs:
+        description: More details
+        url: 'https://github.com/exleym/coinpl/blob/master/README.md'
+      parameters:
+        - name: currency_id
+          in: path
+          description: id associated with the target Currency
+          required: true
+          explode: false
+          schema:
+            type: integer
+          example: 42
+      responses:
+        '200':
+          description: Currency Response
+          content:
+            application/json:
+              schema:
+                description: Successful operation
+                $ref: '#/components/schemas/Currency'
+    delete:
+      tags:
+        - currency
+      summary: delete currency type
+      description: Delete an Currency from the system. Will soft-delete.
+      operationId: deleteCurrency
+      parameters:
+        - name: currency_id
+          in: path
+          description: The id of the Currency that needs to be deleted
+          required: true
+          schema:
+            type: string
+      responses:
+        '400':
+          description: Invalid currency supplied
+        '404':
+          description: Currency not found
+  /cut:
+    post:
+      tags:
+        - cut
+      summary: trigger a cut
+      description: Trigger a PL Cut
+      operationId: createCut
+      externalDocs:
+        description: More details
+        url: 'https://github.com/exleym/coinpl/blob/master/README.md'
+      responses:
+        '400':
+          description: Malformed request
+        '401':
+          description: Login required
+        '403':
+          description: unauthorized
+        '405':
+          description: Invalid input
+      requestBody:
+        $ref: '#/components/requestBodies/Cut'
+    get:
+      tags:
+        - cut
+      summary: get cuts
+      description: Get Cuts
+      operationId: getCuts
+      externalDocs:
+        description: More details
+        url: 'https://github.com/exleym/coinpl/blob/master/README.md'
+      responses:
+        '200':
+          description: Cut Response
+          content:
+            application/json:
+              schema:
+                description: Successful operation
+                $ref: '#/components/schemas/Cut'
+  '/cut/{cut_id}':
+    get:
+      tags:
+        - cut
+      summary: get cut by id
+      description: Get a Cut by Id
+      operationId: getCut
+      externalDocs:
+        description: More details
+        url: 'https://github.com/exleym/coinpl/blob/master/README.md'
+      parameters:
+        - name: cut_id
+          in: path
+          description: id associated with the target Cut
+          required: true
+          explode: false
+          schema:
+            type: integer
+          example: 42
+      responses:
+        '200':
+          description: Cut Response
+          content:
+            application/json:
+              schema:
+                description: Successful operation
+                $ref: '#/components/schemas/Cut'
+    delete:
+      tags:
+        - cut
+      summary: delete cut by id
+      description: Delete a Cut from the system. Will soft-delete.
+      operationId: deleteCut
+      parameters:
+        - name: cut_id
+          in: path
+          description: The id of the Cut that needs to be deleted
+          required: true
+          schema:
+            type: string
+      responses:
+        '400':
+          description: Invalid Cut supplied
+        '404':
+          description: Cut not found
+components:
+  schemas:
+    Alert:
+      title: alert
+      type: object
+      properties:
+        id:
+          type: integer
+          description: primary key identifier
+          example: 1
+        timestamp:
+          type: string
+          description: time alert was created
+          example: '2017-11-25 18:04:38'
+        alert_type_id:
+          type: integer
+          description: foreign key to AlertType
+          example: 1
+        approved:
+          type: boolean
+          description: is Alert signed-off on
+          example: false
+        approving_user_id:
+          type: integer
+          description: 'if alert has been approved, foreign key to user who approved'
+          example: 42
+        approval_timestamp:
+          type: string
+          description: when alert was approved
+          example: '2017-11-25 19:04:38'
+    AlertType:
+      title: alert type
+      type: object
+      properties:
+        id:
+          type: integer
+          description: primary key identifier
+          example: 1
+        name:
+          type: string
+          description: alert type name
+          example: 'Trade Execution Alert'
+        short_name:
+          type: string
+          description: abbreviated name for display
+          example: 'ExecutionAlert'
+    Currency:
+      title: currency
+      type: object
+      properties:
+        id:
+          type: integer
+          description: primary key identifier
+          example: 1
+        symbol:
+          type: string
+          description: short code for currency
+          example: 'XBT'
+        name:
+          type: string
+          description: currency name
+          example: 'Bitcoin'
+        min_size:
+          type: number
+          description: minimum transaction size
+          example: '0.001'
+        ipo_date:
+          type: string
+          description: date of currency IPO
+          example: '2009-01-03'
+        currency_limit:
+          type: integer
+          description: maximum number of coins outstanding
+          example: 21000000
+    Cut:
+      title: cut
+      type: object
+      properties:
+        id:
+          type: integer
+          description: primary key identifier
+          example: 1
+        wallet_id:
+          type: integer
+          description: foreign key to a wallet
+          example: 314159
+        effective:
+          type: string
+          description: cut effective time
+          example: '2017-12-12 00:00:00'
+        cut_time:
+          type: string
+          description: time cut was actually run
+          example: '2017-12-12 00:37:21'
+        pl_version_id:
+          type: integer
+          description: version of the PL system used to make cut
+          example: 12345
+  requestBodies:
+    Alert:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Alert'
+      description: Alert creation to pass to users
+      required: true
+    AlertType:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AlertType'
+      description: Create a new AlertType in system
+      required: true
+    Currency:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Currency'
+      description: Currency creation
+      required: true
+    Cut:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Cut'
+      description: Cut creation
+      required: true
