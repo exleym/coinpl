@@ -1,0 +1,82 @@
+openapi: "3.0.0"
+
+info:
+  title: CoinPL API
+  description: "This is the API doc for the CoinPL Application"
+  version: "1.0"
+  termsOfService: https://konghq.com/terms/
+  contact:
+    name: exleym
+    url: https://market.mashape.com/fyhao
+    email: exleym@gmail.com
+  license:
+    name: Limited license
+    url: https://github.com/exleym/coinpl
+servers:
+  - url: http://localhost
+    description: User Docker Server
+paths:
+  /alert:
+    get:
+      tags:
+      - Alert
+      summary: getAlert
+      description: Get an Alert by Id
+      operationId: getAlert
+      externalDocs:
+        description: More details
+        url: "https://github.com/exleym/coinpl/blob/master/README.md"
+      parameters:
+      - name: alert_id
+        in: path
+        description: id associated with the target alert
+        required: true
+        style: form
+        explode: false
+        schema:
+          type: integer
+        example: 42
+      responses:
+        200:
+          description: Alert Response
+          content:
+            application/json:
+              schema:
+                description: Successful operation
+                $ref: '#/components/schemas/AlertResponse'
+components:
+  schemas:
+    AlertResponse:
+      title: alert response
+      type: object
+      properties:
+        id:
+          type: integer
+          description: primary key identifier
+          example: 1
+        timestamp:
+          type: string
+          description: time alert was created
+          example: "2017-11-25 18:04:38"
+        alert_type_id:
+          type: integer
+          description: foreign key to AlertType
+          example: 1
+        approved:
+          type: boolean
+          description: is Alert signed-off on
+          example: false
+        approving_user_id:
+          type: integer
+          description: if alert has been approved, foreign key to user who approved
+          example: 42
+        approval_timestamp:
+          type: string
+          description: when alert was approved
+          example: "2017-11-25 19:04:38"
+
+security:
+
+tags:
+
+externalDocs:

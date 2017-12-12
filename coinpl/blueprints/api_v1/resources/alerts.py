@@ -28,9 +28,9 @@ def create_alert():
     session = get_session(current_app)
     alert = Alert(timestamp=datetime.now(),
                   alert_type_id=data['alert_type_id'],
-                  min_size=data['min_size'],
-                  ipo_date=datetime.strptime(data['ipo_date'], "%Y-%m-%d"),
-                  alert_limit=data['alert_limit'])
+                  approved=False,
+                  approving_user_id=None,
+                  approval_timestamp=None)
     session.add(alert)
     try:
         session.commit()
@@ -41,7 +41,7 @@ def create_alert():
 
 @api_v1.route('/alert/<int:alert_id>', methods=['GET'])
 def read_alert_by_id(alert_id):
-    shallow = False if request.args.get('shallow') == 'false' else True
+    shallow = True if request.args.get('shallow') == 'true' else False
     session = get_session(current_app)
     alert = session.query(Alert).filter(Alert.id == alert_id).first()
     if not alert:

@@ -42,6 +42,12 @@ from . resources.alerts import (create_alert,
                                 update_alert,
                                 delete_alert)
 
+from . resources.alert_types import (create_alert_type,
+                                     read_alert_type_by_id,
+                                     read_alert_types,
+                                     update_alert_type,
+                                     delete_alert_type)
+
 from . resources.currencies import (create_currency,
                                     read_currency_by_id,
                                     read_currencies,

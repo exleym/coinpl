@@ -35,7 +35,9 @@ class GDAXDataManager(object):
             p['symbol'] = p['id']
             p['base_currency_id'] = currencies[p['base_currency']]
             p['quote_currency_id'] = currencies[p['quote_currency']]
-            p = {k: v for k, v in p.items() if k not in ['id', 'base_currency', 'quote_currency']}
+            p = {k: v for k, v in p.items() if k not in ['id', 'base_currency',
+                                                         'status', 'status_message',
+                                                         'quote_currency']}
             session.add(Product(**p))
         session.commit()
         session.close()
