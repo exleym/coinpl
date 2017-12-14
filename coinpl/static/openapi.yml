@@ -420,6 +420,267 @@ paths:
           description: Invalid Cut supplied
         '404':
           description: Cut not found
+  /exchange:
+    post:
+      tags:
+        - exchange
+      summary: create a new exchange
+      description: Add an Exchange
+      operationId: createExchange
+      externalDocs:
+        description: More details
+        url: 'https://github.com/exleym/coinpl/blob/master/README.md'
+      responses:
+        '400':
+          description: Malformed request
+        '401':
+          description: Login required
+        '403':
+          description: unauthorized
+        '405':
+          description: Invalid input
+      requestBody:
+        $ref: '#/components/requestBodies/Exchange'
+    put:
+      tags:
+        - exchange
+      summary: update exchange
+      description: This method allows an Exchange to be updated with new data
+      operationId: updateExchange
+      parameters:
+        - name: exchange_id
+          in: query
+          description: exchange that needs to be updated
+          required: true
+          schema:
+            type: string
+      responses:
+        '400':
+          description: Invalid exchange supplied
+        '404':
+          description: Exchange not found
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Exchange'
+        description: Updated exchange object
+        required: true
+    get:
+      tags:
+        - exchange
+      summary: get exchanges
+      description: Get Exchanges
+      operationId: getExchanges
+      externalDocs:
+        description: More details
+        url: 'https://github.com/exleym/coinpl/blob/master/README.md'
+      responses:
+        '200':
+          description: Exchange Response
+          content:
+            application/json:
+              schema:
+                description: Successful operation
+                $ref: '#/components/schemas/Exchange'
+  '/exchange/{exchange_id}':
+    get:
+      tags:
+        - exchange
+      summary: get exchange by id
+      description: Get an Exchange by Id
+      operationId: getExchange
+      externalDocs:
+        description: More details
+        url: 'https://github.com/exleym/coinpl/blob/master/README.md'
+      parameters:
+        - name: exchange_id
+          in: path
+          description: id associated with the target Exchange
+          required: true
+          explode: false
+          schema:
+            type: integer
+          example: 42
+      responses:
+        '200':
+          description: Exchange Response
+          content:
+            application/json:
+              schema:
+                description: Successful operation
+                $ref: '#/components/schemas/Exchange'
+    delete:
+      tags:
+        - exchange
+      summary: delete exchange by id
+      description: Delete an Exchange from the system. Will soft-delete.
+      operationId: deleteExchange
+      parameters:
+        - name: exchange_id
+          in: path
+          description: The id of the Exchange that needs to be deleted
+          required: true
+          schema:
+            type: string
+      responses:
+        '400':
+          description: Invalid Exchange supplied
+        '404':
+          description: Exchange not found
+  /holding:
+    get:
+      tags:
+        - holding
+      summary: get holdings
+      description: Get Holdings
+      operationId: getHoldings
+      externalDocs:
+        description: More details
+        url: 'https://github.com/exleym/coinpl/blob/master/README.md'
+      responses:
+        '200':
+          description: Holding Response
+          content:
+            application/json:
+              schema:
+                description: Successful operation
+                $ref: '#/components/schemas/Holding'
+  '/holding/{holding_id}':
+    get:
+      tags:
+        - holding
+      summary: get holding by id
+      description: Get a Holding by Id
+      operationId: getHolding
+      externalDocs:
+        description: More details
+        url: 'https://github.com/exleym/coinpl/blob/master/README.md'
+      parameters:
+        - name: holding_id
+          in: path
+          description: id associated with the target Holding
+          required: true
+          explode: false
+          schema:
+            type: integer
+          example: 42
+      responses:
+        '200':
+          description: Holding Response
+          content:
+            application/json:
+              schema:
+                description: Successful operation
+                $ref: '#/components/schemas/Holding'
+  /market:
+    post:
+      tags:
+        - market
+      summary: create a new market
+      description: Add a Market
+      operationId: createMarket
+      externalDocs:
+        description: More details
+        url: 'https://github.com/exleym/coinpl/blob/master/README.md'
+      responses:
+        '400':
+          description: Malformed request
+        '401':
+          description: Login required
+        '403':
+          description: unauthorized
+        '405':
+          description: Invalid input
+      requestBody:
+        $ref: '#/components/requestBodies/Market'
+    put:
+      tags:
+        - market
+      summary: update market
+      description: This method allows an Market to be corrected
+      operationId: updateMarket
+      parameters:
+        - name: market_id
+          in: query
+          description: market that needs to be corrected
+          required: true
+          schema:
+            type: string
+      responses:
+        '400':
+          description: Invalid market supplied
+        '404':
+          description: Market not found
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Market'
+        description: Updated market object
+        required: true
+    get:
+      tags:
+        - market
+      summary: get markets
+      description: Get Markets
+      operationId: getMarkets
+      externalDocs:
+        description: More details
+        url: 'https://github.com/exleym/coinpl/blob/master/README.md'
+      responses:
+        '200':
+          description: Market Response
+          content:
+            application/json:
+              schema:
+                description: Successful operation
+                $ref: '#/components/schemas/Market'
+  '/market/{market_id}':
+    get:
+      tags:
+        - market
+      summary: get market by id
+      description: Get a Market by Id
+      operationId: getMarket
+      externalDocs:
+        description: More details
+        url: 'https://github.com/exleym/coinpl/blob/master/README.md'
+      parameters:
+        - name: market_id
+          in: path
+          description: id associated with the target Market
+          required: true
+          explode: false
+          schema:
+            type: integer
+          example: 42
+      responses:
+        '200':
+          description: Market Response
+          content:
+            application/json:
+              schema:
+                description: Successful operation
+                $ref: '#/components/schemas/Market'
+    delete:
+      tags:
+        - market
+      summary: delete market by id
+      description: Delete a Market from the system. Will soft-delete.
+      operationId: deleteMarket
+      parameters:
+        - name: market_id
+          in: path
+          description: The id of the Market that needs to be deleted
+          required: true
+          schema:
+            type: string
+      responses:
+        '400':
+          description: Invalid Market supplied
+        '404':
+          description: Market not found
 components:
   schemas:
     Alert:
@@ -518,6 +779,104 @@ components:
           type: integer
           description: version of the PL system used to make cut
           example: 12345
+    Exchange:
+      title: exchange
+      type: object
+      properties:
+        id:
+          type: integer
+          description: primary key identifier
+          example: 1
+        symbol:
+          type: string
+          description: human readable id for exchange
+          example: 'CBS'
+        name:
+          type: string
+          description: long (formal) name of exchange
+          example: 'Coinbase'
+        url:
+          type: string
+          description: base url for linking to exchange
+          example: 'http://www.coinbase.com'
+        active:
+          type: boolean
+          description: flag for determining if exchange still operates
+          example: true
+    Holding:
+      title: holding
+      type: object
+      properties:
+        id:
+          type: integer
+          description: primary key identifier
+          example: 1
+        wallet_id:
+          type: integer
+          description: foreign key to a wallet
+          example: 314159
+        currency_id:
+          type: integer
+          description: foreign key to a currency
+          example: 12
+        cut_id:
+          type: integer
+          description: foreign key to the cut responsible for this value
+          example: 123456
+        cut_date:
+          type: string
+          description: date of holding / cut
+          example: '2017-12-14'
+        quantity:
+          type: number
+          description: quantity held in this wallet
+        price:
+          type: number
+          description: prevailing price at cut time
+    Market:
+      title: market
+      type: object
+      properties:
+        id:
+          type: integer
+          description: primary key identifier
+          example: 1
+        timestamp:
+          type: string
+          description: timestamp of quote
+          example: '2017-12-14 08:15:00'
+        sequence:
+          type: integer
+          description: exchange identifier for quote
+          example: 123456789123
+        product_id:
+          type: integer
+          description: foreign key to the FX product (XBT/USD)
+          example: 126
+        bid_price:
+          type: number
+          description: best bid
+          example: 17243.45
+        bid_size:
+          type: number
+          description: size that can be executed at bid_price
+          example: 243.123
+        bid_parties:
+          type: integer
+          description: number of active parties on the best bid
+          example: 6
+        ask_price:
+          type: number
+          description: best offer
+          example: 17266.98
+        ask_size:
+          type: number
+          description: size that can be executed at ask_price
+          example: 101.456
+        ask_parties:
+          type: integer
+          description: number of active parties on the best offer
+          example: 4
   requestBodies:
     Alert:
       content:
@@ -546,4 +905,25 @@ components:
           schema:
             $ref: '#/components/schemas/Cut'
       description: Cut creation
+      required: true
+    Exchange:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Exchange'
+      description: Exchange creation
+      required: true
+    Holding:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Holding'
+      description: Holdings
+      required: true
+    Market:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Market'
+      description: Market
       required: true

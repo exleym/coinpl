@@ -57,7 +57,6 @@ from . resources.currencies import (create_currency,
 from . resources.cuts import (create_cut,
                               read_cut_by_id,
                               read_cuts,
-                              update_cut,
                               delete_cut)
 
 from . resources.exchanges import (create_exchange,

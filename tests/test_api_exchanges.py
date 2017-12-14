@@ -35,7 +35,7 @@ class TestModels(unittest.TestCase):
                 'url': 'http://foo.bar/1',
                 'active': True
             }
-            rv = self.create_resource('exchanges', exchange)
+            rv = self.create_resource('exchange', exchange)
             data = json.loads(rv.data)
             self.assertEqual(data["name"], "Test Exchange 01")
 
@@ -49,7 +49,7 @@ class TestModels(unittest.TestCase):
     def test_get_multiple_exchanges(self):
         with self.app.test_request_context():
             create_exchanges(self.client)
-            resp = self.get_resource('exchanges')
+            resp = self.get_resource('exchange')
             data = json.loads(resp.data)
             self.assertEqual(len(data), 2)
             self.assertEqual(data[1]['name'], 'GDAX')

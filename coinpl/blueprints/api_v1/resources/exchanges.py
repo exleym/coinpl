@@ -12,7 +12,7 @@ from coinpl.blueprints.api_v1 import api_v1, error_out, verify_required_fields
 # API Routes for accessing and managing currency information
 # With these API endpoints, users can retrieve currency information by id,
 # retrieve a list of exchanges, add new exchanges, update existing exchanges.
-@api_v1.route('/exchanges', methods=['POST'])
+@api_v1.route('/exchange', methods=['POST'])
 def create_exchange():
     """ POST to /api/v1.0/exchanges will create a new Exchange object
     """
@@ -47,7 +47,7 @@ def read_exchange_by_id(exchange_id):
     return jsonify(exch.json), 200
 
 
-@api_v1.route('/exchanges/', methods=['GET'])
+@api_v1.route('/exchange/', methods=['GET'])
 def read_exchanges():
     session = get_session(current_app)
     exch = session.query(Exchange).all()

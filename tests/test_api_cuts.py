@@ -35,7 +35,7 @@ class TestModels(unittest.TestCase):
                 'cut_time': '2017-8-1 17:15:06',
                 'pl_version_id': 1
             }
-            rv = self.create_resource('cuts', cut)
+            rv = self.create_resource('cut', cut)
             data = json.loads(rv.data)
             self.assertEqual(data["id"], 1)
 
@@ -49,7 +49,7 @@ class TestModels(unittest.TestCase):
     def test_get_multiple_cuts(self):
         with self.app.test_request_context():
             create_cuts(self.client)
-            resp = self.get_resource('cuts')
+            resp = self.get_resource('cut')
             data = json.loads(resp.data)
             self.assertEqual(len(data), 4)
             self.assertEqual(data[0]['wallet_id'], 1)

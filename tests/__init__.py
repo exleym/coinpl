@@ -27,7 +27,7 @@ def create_currencies(client):
 
 
 def create_cuts(client):
-    cuts = client.get(URL_BASE + 'cuts/')
+    cuts = client.get(URL_BASE + 'cut/')
     if cuts.status_code == 200:
         return 0
     create_wallets(client)
@@ -44,14 +44,14 @@ def create_cuts(client):
          "pl_version_id": 1}
     ]
     for c in cuts:
-        client.post(URL_BASE + 'cuts',
+        client.post(URL_BASE + 'cut',
                     data=json.dumps(c),
                     content_type='application/json')
     return 0
 
 
 def create_exchanges(client):
-    exchanges = client.get(URL_BASE + 'exchanges/')
+    exchanges = client.get(URL_BASE + 'exchange/')
     if exchanges.status_code == 200:
         return 0
     exchanges = [
@@ -59,7 +59,7 @@ def create_exchanges(client):
         {'name': 'GDAX', 'symbol': 'GDAX', 'url': 'http://api.gdax.com', 'active': True}
     ]
     for x in exchanges:
-        client.post(URL_BASE + 'exchanges',
+        client.post(URL_BASE + 'exchange',
                     data=json.dumps(x),
                     content_type='application/json')
     return 0
