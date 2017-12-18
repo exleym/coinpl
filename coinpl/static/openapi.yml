@@ -681,6 +681,546 @@ paths:
           description: Invalid Market supplied
         '404':
           description: Market not found
+  /product:
+    post:
+      tags:
+        - product
+      summary: create a new product
+      description: Add a Product
+      operationId: createProduct
+      externalDocs:
+        description: More details
+        url: 'https://github.com/exleym/coinpl/blob/master/README.md'
+      responses:
+        '400':
+          description: Malformed request
+        '401':
+          description: Login required
+        '403':
+          description: unauthorized
+        '405':
+          description: Invalid input
+      requestBody:
+        $ref: '#/components/requestBodies/Product'
+    put:
+      tags:
+        - product
+      summary: update product
+      description: This method allows an Product to be corrected
+      operationId: updateProduct
+      parameters:
+        - name: product_id
+          in: query
+          description: product that needs to be corrected
+          required: true
+          schema:
+            type: string
+      responses:
+        '400':
+          description: Invalid product supplied
+        '404':
+          description: Product not found
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+        description: Updated product object
+        required: true
+    get:
+      tags:
+        - product
+      summary: get products
+      description: Get Products
+      operationId: getProducts
+      externalDocs:
+        description: More details
+        url: 'https://github.com/exleym/coinpl/blob/master/README.md'
+      responses:
+        '200':
+          description: Product Response
+          content:
+            application/json:
+              schema:
+                description: Successful operation
+                $ref: '#/components/schemas/Product'
+  '/product/{product_id}':
+    get:
+      tags:
+        - product
+      summary: get product by id
+      description: Get a Product by Id
+      operationId: getProduct
+      externalDocs:
+        description: More details
+        url: 'https://github.com/exleym/coinpl/blob/master/README.md'
+      parameters:
+        - name: product_id
+          in: path
+          description: id associated with the target Product
+          required: true
+          explode: false
+          schema:
+            type: integer
+          example: 42
+      responses:
+        '200':
+          description: Product Response
+          content:
+            application/json:
+              schema:
+                description: Successful operation
+                $ref: '#/components/schemas/Product'
+    delete:
+      tags:
+        - product
+      summary: delete product by id
+      description: Delete a Product from the system. Will soft-delete.
+      operationId: deleteProduct
+      parameters:
+        - name: product_id
+          in: path
+          description: The id of the Product that needs to be deleted
+          required: true
+          schema:
+            type: string
+      responses:
+        '400':
+          description: Invalid Product supplied
+        '404':
+          description: Product not found
+  /transaction:
+    post:
+      tags:
+        - transaction
+      summary: create a new transaction
+      description: Add a Transaction
+      operationId: createTransaction
+      externalDocs:
+        description: More details
+        url: 'https://github.com/exleym/coinpl/blob/master/README.md'
+      responses:
+        '400':
+          description: Malformed request
+        '401':
+          description: Login required
+        '403':
+          description: unauthorized
+        '405':
+          description: Invalid input
+      requestBody:
+        $ref: '#/components/requestBodies/Transaction'
+    put:
+      tags:
+        - transaction
+      summary: update transaction
+      description: This method allows an Transaction to be corrected
+      operationId: updateTransaction
+      parameters:
+        - name: transaction_id
+          in: query
+          description: transaction that needs to be corrected
+          required: true
+          schema:
+            type: string
+      responses:
+        '400':
+          description: Invalid transaction supplied
+        '404':
+          description: Transaction not found
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Transaction'
+        description: Updated transaction object
+        required: true
+    get:
+      tags:
+        - transaction
+      summary: get transactions
+      description: Get Transactions
+      operationId: getTransactions
+      externalDocs:
+        description: More details
+        url: 'https://github.com/exleym/coinpl/blob/master/README.md'
+      responses:
+        '200':
+          description: Transaction Response
+          content:
+            application/json:
+              schema:
+                description: Successful operation
+                $ref: '#/components/schemas/Transaction'
+  '/transaction/{transaction_id}':
+    get:
+      tags:
+        - transaction
+      summary: get transaction by id
+      description: Get a Transaction by Id
+      operationId: getTransaction
+      externalDocs:
+        description: More details
+        url: 'https://github.com/exleym/coinpl/blob/master/README.md'
+      parameters:
+        - name: transaction_id
+          in: path
+          description: id associated with the target Transaction
+          required: true
+          explode: false
+          schema:
+            type: integer
+          example: 42
+      responses:
+        '200':
+          description: Transaction Response
+          content:
+            application/json:
+              schema:
+                description: Successful operation
+                $ref: '#/components/schemas/Transaction'
+    delete:
+      tags:
+        - transaction
+      summary: delete transaction by id
+      description: Delete a Transaction from the system. Will soft-delete.
+      operationId: deleteTransaction
+      parameters:
+        - name: transaction_id
+          in: path
+          description: The id of the Transaction that needs to be deleted
+          required: true
+          schema:
+            type: string
+      responses:
+        '400':
+          description: Invalid Transaction supplied
+        '404':
+          description: Transaction not found
+  /user:
+    post:
+      tags:
+        - user
+      summary: create a new user
+      description: Add a User
+      operationId: createUser
+      externalDocs:
+        description: More details
+        url: 'https://github.com/exleym/coinpl/blob/master/README.md'
+      responses:
+        '400':
+          description: Malformed request
+        '401':
+          description: Login required
+        '403':
+          description: unauthorized
+        '405':
+          description: Invalid input
+      requestBody:
+        $ref: '#/components/requestBodies/User'
+    put:
+      tags:
+        - user
+      summary: update user
+      description: This method allows an User to be corrected
+      operationId: updateUser
+      parameters:
+        - name: user_id
+          in: query
+          description: user that needs to be corrected
+          required: true
+          schema:
+            type: string
+      responses:
+        '400':
+          description: Invalid user supplied
+        '404':
+          description: User not found
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+        description: Updated user object
+        required: true
+    get:
+      tags:
+        - user
+      summary: get users
+      description: Get Users
+      operationId: getUsers
+      externalDocs:
+        description: More details
+        url: 'https://github.com/exleym/coinpl/blob/master/README.md'
+      responses:
+        '200':
+          description: User Response
+          content:
+            application/json:
+              schema:
+                description: Successful operation
+                $ref: '#/components/schemas/User'
+  '/user/{user_id}':
+    get:
+      tags:
+        - user
+      summary: get user by id
+      description: Get a User by Id
+      operationId: getUser
+      externalDocs:
+        description: More details
+        url: 'https://github.com/exleym/coinpl/blob/master/README.md'
+      parameters:
+        - name: user_id
+          in: path
+          description: id associated with the target User
+          required: true
+          explode: false
+          schema:
+            type: integer
+          example: 42
+      responses:
+        '200':
+          description: User Response
+          content:
+            application/json:
+              schema:
+                description: Successful operation
+                $ref: '#/components/schemas/User'
+    delete:
+      tags:
+        - user
+      summary: delete user by id
+      description: Delete a User from the system. Will soft-delete.
+      operationId: deleteUser
+      parameters:
+        - name: user_id
+          in: path
+          description: The id of the User that needs to be deleted
+          required: true
+          schema:
+            type: string
+      responses:
+        '400':
+          description: Invalid User supplied
+        '404':
+          description: User not found
+  /wallet:
+    post:
+      tags:
+        - wallet
+      summary: create a new wallet
+      description: Add a Wallet
+      operationId: createWallet
+      externalDocs:
+        description: More details
+        url: 'https://github.com/exleym/coinpl/blob/master/README.md'
+      responses:
+        '400':
+          description: Malformed request
+        '401':
+          description: Login required
+        '403':
+          description: unauthorized
+        '405':
+          description: Invalid input
+      requestBody:
+        $ref: '#/components/requestBodies/Wallet'
+    put:
+      tags:
+        - wallet
+      summary: update wallet
+      description: This method allows an Wallet to be corrected
+      operationId: updateWallet
+      parameters:
+        - name: wallet_id
+          in: query
+          description: wallet that needs to be corrected
+          required: true
+          schema:
+            type: string
+      responses:
+        '400':
+          description: Invalid wallet supplied
+        '404':
+          description: Wallet not found
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Wallet'
+        description: Updated wallet object
+        required: true
+    get:
+      tags:
+        - wallet
+      summary: get wallets
+      description: Get Wallets
+      operationId: getWallets
+      externalDocs:
+        description: More details
+        url: 'https://github.com/exleym/coinpl/blob/master/README.md'
+      responses:
+        '200':
+          description: Wallet Response
+          content:
+            application/json:
+              schema:
+                description: Successful operation
+                $ref: '#/components/schemas/Wallet'
+  '/wallet/{wallet_id}':
+    get:
+      tags:
+        - wallet
+      summary: get wallet by id
+      description: Get a Wallet by Id
+      operationId: getWallet
+      externalDocs:
+        description: More details
+        url: 'https://github.com/exleym/coinpl/blob/master/README.md'
+      parameters:
+        - name: wallet_id
+          in: path
+          description: id associated with the target Wallet
+          required: true
+          explode: false
+          schema:
+            type: integer
+          example: 42
+      responses:
+        '200':
+          description: Wallet Response
+          content:
+            application/json:
+              schema:
+                description: Successful operation
+                $ref: '#/components/schemas/Wallet'
+    delete:
+      tags:
+        - wallet
+      summary: delete wallet by id
+      description: Delete a Wallet from the system. Will soft-delete.
+      operationId: deleteWallet
+      parameters:
+        - name: wallet_id
+          in: path
+          description: The id of the Wallet that needs to be deleted
+          required: true
+          schema:
+            type: string
+      responses:
+        '400':
+          description: Invalid Wallet supplied
+        '404':
+          description: Wallet not found
+  /wallet_data:
+    post:
+      tags:
+        - wallet_data
+      summary: create a new wallet_data
+      description: Add a WalletData
+      operationId: createWalletData
+      externalDocs:
+        description: More details
+        url: 'https://github.com/exleym/coinpl/blob/master/README.md'
+      responses:
+        '400':
+          description: Malformed request
+        '401':
+          description: Login required
+        '403':
+          description: unauthorized
+        '405':
+          description: Invalid input
+      requestBody:
+        $ref: '#/components/requestBodies/WalletData'
+    put:
+      tags:
+        - wallet_data
+      summary: update wallet_data
+      description: This method allows an WalletData to be corrected
+      operationId: updateWalletData
+      parameters:
+        - name: wallet_data_id
+          in: query
+          description: wallet_data that needs to be corrected
+          required: true
+          schema:
+            type: string
+      responses:
+        '400':
+          description: Invalid wallet_data supplied
+        '404':
+          description: WalletData not found
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WalletData'
+        description: Updated wallet_data object
+        required: true
+    get:
+      tags:
+        - wallet_data
+      summary: get wallet_datas
+      description: Get WalletDatas
+      operationId: getWalletDatas
+      externalDocs:
+        description: More details
+        url: 'https://github.com/exleym/coinpl/blob/master/README.md'
+      responses:
+        '200':
+          description: WalletData Response
+          content:
+            application/json:
+              schema:
+                description: Successful operation
+                $ref: '#/components/schemas/WalletData'
+  '/wallet_data/{wallet_data_id}':
+    get:
+      tags:
+        - wallet_data
+      summary: get wallet_data by id
+      description: Get a WalletData by Id
+      operationId: getWalletData
+      externalDocs:
+        description: More details
+        url: 'https://github.com/exleym/coinpl/blob/master/README.md'
+      parameters:
+        - name: wallet_data_id
+          in: path
+          description: id associated with the target WalletData
+          required: true
+          explode: false
+          schema:
+            type: integer
+          example: 42
+      responses:
+        '200':
+          description: WalletData Response
+          content:
+            application/json:
+              schema:
+                description: Successful operation
+                $ref: '#/components/schemas/WalletData'
+    delete:
+      tags:
+        - wallet_data
+      summary: delete wallet_data by id
+      description: Delete a WalletData from the system. Will soft-delete.
+      operationId: deleteWalletData
+      parameters:
+        - name: wallet_data_id
+          in: path
+          description: The id of the WalletData that needs to be deleted
+          required: true
+          schema:
+            type: string
+      responses:
+        '400':
+          description: Invalid WalletData supplied
+        '404':
+          description: WalletData not found
 components:
   schemas:
     Alert:
@@ -877,6 +1417,190 @@ components:
           type: integer
           description: number of active parties on the best offer
           example: 4
+    Product:
+      title: product
+      type: object
+      properties:
+        id:
+          type: integer
+          description: primary key identifier
+          example: 1
+        symbol:
+          type: string
+          description: cross-currency ticker
+          example: 'XBT/USD'
+        base_currency_id:
+          type: integer
+          description: foreign key to a currency
+          example: 12
+        quote_currency_id:
+          type: integer
+          description: foreign key to a currency
+          example: 21
+        base_min_size:
+          type: number
+          description: minimum quotable size
+          example: 0.001
+        base_max_size:
+          type: number
+          description: maximum quotable size
+          example: 100.0
+        quote_increment:
+          type: number
+          description: price increments in quoting currency
+          example: 0.001
+        display_name:
+          type: string
+          description: pretty name for currency
+          example: 'XBT-USD'
+        margin_enabled:
+          type: boolean
+          description: can users trade this product on margin?
+          example: false
+    Transaction:
+      title: transaction
+      type: object
+      properties:
+        id:
+          type: integer
+          description: primary key identifier
+          example: 1
+        currency_id:
+          type: integer
+          description: currency transacted (FK to Currency)
+          example: 42
+        exchange_id:
+          type: integer
+          description: transaction exchange (FK to an Exchange)
+          example: 4
+        wallet_id:
+          type: integer
+          description: transaction wallet (FK to a Wallet)
+          example: 21
+        trade_time:
+          type: string
+          description: timestamp of trade
+          example: '2017-12-17 18:40:25'
+        quantity:
+          type: number
+          description: transaction size
+          example: 0.765
+        execution_price:
+          type: number
+          description: transaction price
+          example: 345.222
+        commission:
+          type: number
+          description: commission paid to the exchange
+          example: 0.0264
+    User:
+      title: user
+      type: object
+      properties:
+        id:
+          type: integer
+          description: primary key identifier
+          example: 1
+        alias:
+          type: string
+          description: username (up to 64 characters)
+          example: 'DildoBaggins'
+        first_name:
+          type: string
+          description: user first name (up to 32 characters)
+          example: 'Harry'
+        last_name:
+          type: string
+          description: user last name (up to 32 characters)
+          example: 'Hood'
+        email:
+          type: string
+          description: user email (unique - up to 64 char)
+          example: 'info@coinpl.com'
+        moderator:
+          type: boolean
+          description: user is mod
+          example: false
+        admin:
+          type: boolean
+          description: user is admin
+          example: false
+        created:
+          type: string
+          description: timestamp of user creation
+          example: '2017-12-17 19:03:25'
+        updated:
+          type: string
+          description: timestamp of user update
+          example: '2017-12-17 19:03:25'
+    Wallet:
+      title: wallet
+      type: object
+      properties:
+        id:
+          type: integer
+          description: primary key identifier
+          example: 1
+        owner_id:
+          type: integer
+          description: wallet owner (FK to User)
+          example: 9
+        exchange_id:
+          type: integer
+          description: wallet affiliated exchange (optional FK to Exchange)
+          example: 33
+        currency_id:
+          type: integer
+          description: wallet currency (FK to Currency)
+          example: 99
+        name:
+          type: string
+          description: wallet name (max 128 characters)
+          example: 'Bitstamp XBT Wallet'
+        inception_date:
+          type: string
+          description: datetime of wallet creation
+          example: '2017-12-17 19:21:12'
+        address:
+          type: string
+          description: wallet address (len 34)
+          example: '1LStTNEH7m6KLRKGghCiXUNR4fNnwvD2iP'
+        deactivated:
+          type: boolean
+          description: has wallet been deactivated
+          example: false
+    WalletData:
+      title: wallet data
+      type: object
+      properties:
+        id:
+          type: integer
+          description: primary key identifier
+          example: 1
+        wallet_id:
+          type: integer
+          description: wallet (FK to Wallet)
+          example: 2
+        cut_id:
+          type: integer
+          description: foreign key to a PL cut (FK to Cut)
+          example: 36
+        effective:
+          type: string
+          description: effective date
+          example: '2017-12-17'
+        nav:
+          type: number
+          description: net asset value in wallet (USD)
+          example: 543.21
+        invested_value:
+          type: number
+          description: total invested value in wallet (USD)
+          example: 543.21
+        superceded:
+          type: boolean
+          description: flag if data has been superceded
+          example: false
   requestBodies:
     Alert:
       content:
@@ -926,4 +1650,39 @@ components:
           schema:
             $ref: '#/components/schemas/Market'
       description: Market
+      required: true
+    Product:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Product'
+      description: Product
+      required: true
+    Transaction:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Transaction'
+      description: Transaction
+      required: true
+    User:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/User'
+      description: User
+      required: true
+    Wallet:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Wallet'
+      description: User
+      required: true
+    WalletData:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/WalletData'
+      description: User
       required: true

@@ -36,7 +36,7 @@ class TestModels(unittest.TestCase):
                 'last_name': 'Garcia',
                 'email': 'jgarcia@gmail.com'
             }
-            rv = self.create_resource('users', dta)
+            rv = self.create_resource('user', dta)
             data = json.loads(rv.data)
             self.assertEqual(data["alias"], "jerry")
             self.assertEqual(data["id"], 1)
@@ -51,7 +51,7 @@ class TestModels(unittest.TestCase):
     def test_get_multiple_users(self):
         with self.app.test_request_context():
             create_users(self.client)
-            resp = self.get_resource('users')
+            resp = self.get_resource('user')
             data = json.loads(resp.data)
             self.assertEqual(len(data), 5)
             self.assertEqual(data[0]['alias'], 'jerry')

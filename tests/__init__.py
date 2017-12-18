@@ -163,7 +163,7 @@ def create_transactions(client):
 
 
 def create_users(client):
-    users = client.get(URL_BASE + 'users/')
+    users = client.get(URL_BASE + 'user/')
     if users.status_code == 200:
         return 0
     users = [
@@ -179,7 +179,7 @@ def create_users(client):
          'last_name': 'Kreutzmann', 'email': 'bkreutzmann@gmail.com'},
     ]
     for u in users:
-        client.post(URL_BASE + 'users',
+        client.post(URL_BASE + 'user',
                     data=json.dumps(u),
                     content_type='application/json')
     return 0

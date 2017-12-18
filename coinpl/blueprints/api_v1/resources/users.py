@@ -12,7 +12,7 @@ from coinpl.blueprints.api_v1 import api_v1, error_out, verify_required_fields
 # API Routes for accessing and managing currency information
 # With these API endpoints, users can retrieve currency information by id,
 # retrieve a list of users, add new users, update existing users.
-@api_v1.route('/users', methods=['POST'])
+@api_v1.route('/user', methods=['POST'])
 def create_user():
     """ POST to /api/v1.0/users will create a new User object
     """
@@ -50,7 +50,7 @@ def read_user_by_id(user_id):
     return jsonify(exch.shallow_json), 200
 
 
-@api_v1.route('/users/', methods=['GET'])
+@api_v1.route('/user/', methods=['GET'])
 def read_users():
     session = get_session(current_app)
     users = session.query(User).all()

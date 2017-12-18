@@ -42,6 +42,6 @@ services:
     ports:
       - "8080:8080"
     environment:
-    - "URL=http://localhost"
+    - "API_URL=http://localhost/static/openapi.yml"
     container_name: coinpl_swagger_1
     restart: always

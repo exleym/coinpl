@@ -364,8 +364,17 @@ class User(Base, UserMixin):
 
     @property
     def shallow_json(self):
-        return {k: v for k, v in self.__dict__.items()
-                if k not in "_sa_instance_state"}
+        return {
+            "id": self.id,
+            "alias": self.alias,
+            "first_name": self.first_name,
+            "last_name": self.last_name,
+            "email": self.email,
+            "moderator": self.moderator,
+            "admin": self.admin,
+            "created": self.created.strftime('%Y-%m-%d %H:%M:%S'),
+            "updated": self.updated.strftime('%Y-%m-%d %H:%M:%S')
+        }
 
     @property
     def password(self):
