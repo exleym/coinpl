@@ -11,6 +11,7 @@ services:
       - swagger:swagger
     ports:
       - "80:80"
+    command: [nginx-debug, '-g', 'daemon off;']
   web:
     build: .
     ports:

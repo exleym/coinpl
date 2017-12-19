@@ -41,7 +41,7 @@ class TestModels(unittest.TestCase):
                 "name": "Test Wallet!",
                 "inception_date": '2017-1-1'
             }
-            rv = self.create_resource('wallets', dta)
+            rv = self.create_resource('wallet', dta)
             data = json.loads(rv.data)
             self.assertEqual(data["currency_id"], 1)
 
@@ -55,7 +55,7 @@ class TestModels(unittest.TestCase):
     def test_get_multiple_wallets(self):
         with self.app.test_request_context():
             create_wallets(self.client)
-            resp = self.get_resource('wallets')
+            resp = self.get_resource('wallet')
             data = json.loads(resp.data)
             self.assertEqual(len(data), 4)
             self.assertEqual(data[0]['owner_id'], 1)

@@ -15,7 +15,7 @@ from coinpl.blueprints.api_v1 import api_v1, error_out, verify_required_fields
 # With these API endpoints, wallets can retrieve currency information by
 # id, retrieve a list of wallets, add new wallets, update existing
 # wallets.
-@api_v1.route('/wallets', methods=['POST'])
+@api_v1.route('/wallet', methods=['POST'])
 def create_wallet():
     """ POST to /api/v1.0/wallets will create a new Wallet object
     """
@@ -51,7 +51,7 @@ def read_wallet_by_id(wallet_id):
     return jsonify(wallet.shallow_json), 200
 
 
-@api_v1.route('/wallets/', methods=['GET'])
+@api_v1.route('/wallet/', methods=['GET'])
 def read_wallets():
     session = get_session(current_app)
     wallets = session.query(Wallet).all()

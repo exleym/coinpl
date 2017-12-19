@@ -186,7 +186,7 @@ def create_users(client):
 
 
 def create_wallets(client):
-    wallets = client.get(URL_BASE + 'wallets/')
+    wallets = client.get(URL_BASE + 'wallet/')
     if wallets.status_code == 200:
         return 0
     create_users(client)
@@ -203,7 +203,7 @@ def create_wallets(client):
          'name': 'Test Wallet 04', 'inception_date': '2016-12-31'},
     ]
     for w in wallets:
-        client.post(URL_BASE + 'wallets',
+        client.post(URL_BASE + 'wallet',
                     data=json.dumps(w),
                     content_type='application/json')
     return 0
