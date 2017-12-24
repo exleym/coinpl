@@ -410,7 +410,7 @@ class Wallet(Base):
     name = Column(String(128), unique=True)
     inception_date = Column(Date)
     address = Column(String(34))
-    deactivated = Column(Boolean, default=False)
+    deactivated = Column(Boolean)
 
     owner = relationship('User', backref='wallets',
                          primaryjoin="and_(User.id==Wallet.owner_id, "
@@ -431,6 +431,14 @@ class Wallet(Base):
                 "inception_date": self.inception_date.strftime('%Y-%m-%d'),
                 "deactivated": self.deactivated
                 }
+
+    @property
+    def full_json(self):
+        data = self.shallow_json
+        data.update({"currency": self.currency.shallow_json})
+        data.update({"exchange": self.exchange.shallow_json})
+        data.update({"owner": self.owner.shallow_json})
+        return data
 
 
 class WalletData(Base):

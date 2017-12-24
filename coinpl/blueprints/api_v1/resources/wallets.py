@@ -29,11 +29,13 @@ def create_wallet():
     if not verify_required_fields(data, expected_fields):
         return error_out(PostValidationError())
     session = get_session(current_app)
+    inc_date = data['inception_date'][:10]
     wallet = Wallet(owner_id=data['owner_id'],
                     exchange_id=data['exchange_id'],
                     currency_id=data['currency_id'],
                     name=data['name'],
-                    inception_date=datetime.strptime(data['inception_date'], '%Y-%m-%d').date())
+                    inception_date=datetime.strptime(inc_date, '%Y-%m-%d').date(),
+                    deactivated=False)
     session.add(wallet)
     try:
         session.commit()
@@ -48,7 +50,7 @@ def read_wallet_by_id(wallet_id):
     wallet = session.query(Wallet).filter(Wallet.id == wallet_id).first()
     if not wallet:
         return error_out(MissingResourceError('Wallet'))
-    return jsonify(wallet.shallow_json), 200
+    return jsonify(wallet.full_json), 200
 
 
 @api_v1.route('/wallet/', methods=['GET'])
